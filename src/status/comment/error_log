@@ -1,0 +1,2 @@
+[02-Sep-2022 08:44:10 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/status/comment/comment.php on line 15
+[02-Sep-2022 08:45:37 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/status/comment/comment.php on line 15

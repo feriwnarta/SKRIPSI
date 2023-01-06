@@ -1,0 +1,6 @@
+[05-Sep-2022 01:54:22 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 16
+[05-Sep-2022 06:07:25 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 16
+[19-Sep-2022 03:10:52 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 15
+[19-Sep-2022 03:10:52 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, bool given in /home/u1711122/public_html/app/file/function_proses.php on line 30
+[19-Sep-2022 03:10:52 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home/u1711122/public_html/app/src/news/news.php on line 24
+[01-Dec-2022 04:55:03 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 16

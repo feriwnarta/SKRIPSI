@@ -1,0 +1,4 @@
+[10-Aug-2022 08:40:55 UTC] PHP Warning:  curl_setopt() expects parameter 1 to be resource, null given in /home/u1711122/public_html/app/src/sample.php on line 2
+[10-Aug-2022 08:40:55 UTC] PHP Warning:  curl_exec() expects parameter 1 to be resource, null given in /home/u1711122/public_html/app/src/sample.php on line 3
+[10-Aug-2022 08:40:55 UTC] PHP Warning:  curl_close() expects parameter 1 to be resource, null given in /home/u1711122/public_html/app/src/sample.php on line 4
+[10-Aug-2022 09:01:26 UTC] PHP Warning:  Illegal string offset 'status' in /home/u1711122/public_html/app/src/sample.php on line 29

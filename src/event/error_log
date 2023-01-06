@@ -1,0 +1,1 @@
+[06-Sep-2022 02:22:37 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 16
