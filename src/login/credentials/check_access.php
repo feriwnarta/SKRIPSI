@@ -24,6 +24,7 @@ if (!empty($obj['id_user'])) {
                     $access
                 ),
                 JSON_PRETTY_PRINT
+                
             );
         } else {
             echo json_encode('E001');
