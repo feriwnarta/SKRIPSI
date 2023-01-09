@@ -1,1 +1,0 @@
-[27-Dec-2022 07:58:15 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/cordinator/tarik_bagian.php on line 12

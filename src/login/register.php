@@ -104,13 +104,20 @@ if (!empty($_POST['no_ipl']) && !empty($_POST['email']) && !empty($_POST['no_tel
 
 								$rs = $db->insert('tb_user', 'email="' . $email . '", id_user="' . $unique_id_warga . '", no_telp="' . $no_telp . '", username = "' . $no_ipl . '", name = "' . $data_balik['nama'] . '", profile_image="imageuser/default_profile/blank_profile_picture.jpg", id_auth = "' . $result_auth['id_auth'] . '", password = ""');
 
+								// insert notification
+								$unique_id_notification = UUID::guidv4();
+								$result_notification =  $db->insert('tb_settings_notification', 'id_notification = "' . $unique_id_notification . '", id_user = "' . $unique_id_warga . '"');
 
-								if ($rs) {
-									echo json_encode('success');
-								} else {
-									echo json_encode('failed');
+								if ($result_notification) {
+									if ($rs) {
+										echo json_encode('success');
+									} else {
+										echo json_encode('failed');
+									}
 								}
 							}
+						} else {
+							echo json_encode('failed notif');
 						}
 					}
 				} else {
