@@ -34,11 +34,11 @@ if (!empty($_POST['id_user']) && !empty($_POST['username']) && !empty($_POST['fo
 		}
 	} else {
 		$status_image = mysqli_escape_string($db->query, $_POST['status_image']);
-		$result = $db->insert('tb_status', 'status_image="' . $ubah . '",id_user="' . $id_user . '",username="' . $username . '",foto_profile="' . $foto_profile . '",caption="' . $caption . '", location="' . $location . '"');
+		$result = $db->insert('tb_status', 'status_image="' . $status_image . '",id_user="' . $id_user . '",username="' . $username . '",foto_profile="' . $foto_profile . '",caption="' . $caption . '", location="' . $location . '"');
 		if ($result) {
 			echo json_encode("succes");
+		} else {
+			echo json_encode("failed");
 		}
 	}
-} else {
-    var_dump($_POST);
-}
+} 

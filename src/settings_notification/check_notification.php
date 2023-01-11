@@ -9,6 +9,7 @@ class CheckNotification
 {
     static function activeNotif($id_user)
     {
+        
         $db = new db();
         $data = $db->select('tb_settings_notification', 'id_user = "' . $id_user . '"', 'id_user', "ASC");
 
