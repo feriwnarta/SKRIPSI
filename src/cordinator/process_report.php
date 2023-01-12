@@ -35,7 +35,7 @@ if (!empty($obj['id_estate_cordinator']) && !empty($obj['id_report']) && !empty(
 		$title_notif = 'Cordinator menanggapi laporanmu';
 		$contet_notif = 'Laporan mu tentang ' . $category . ' telah diterima dan akan segera diproses';
 
-		$result_add_notif = AddNotification::saveNotif($id_user, $id_report, 'REPORT ACCEPT', $contet_notif, $title_notif);
+		$result_add_notif = AddNotification::saveNotif($id_user, $id_estate_cordinator, 'REPORT ACCEPT', $contet_notif, $title_notif);
 
 		if ($result_add_notif) {
 			// kirim notif ke user

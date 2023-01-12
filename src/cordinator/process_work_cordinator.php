@@ -70,7 +70,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_estate_cordinator'])  && !e
 	$content_notif = 'Laporanmu tentang ' . $category . ' sedang dikerjakan';
 	$title_notif = 'Cordinator menanggapi laporanmu';
 
-	$result_add_notif = AddNotification::saveNotif($id_user, $id_report, 'REPORT PROCESS', $content_notif, $title_notif);
+	$result_add_notif = AddNotification::saveNotif($id_user, $id_estate_cordinator, 'REPORT PROCESS', $content_notif, $title_notif);
 
 	if ($result_add_notif) {
 		// kirim notif keuser bahwa laporan sudah selesai dikerjakan

@@ -70,11 +70,10 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_estate_cordinator']) && !em
 	$id_user = $id_user['id_user'];
 
 
-
 	$content_notif = 'Laporanmu tentang ' . $category . 'telah selesai dikerjakan';
 	$title_notif = 'Cordinator menanggapi laporan';
 
-	$result_save_notif = AddNotification::saveNotif($id_user, $id_report, 'REPORT COMPLETE', $content_notif, $title_notif);
+	$result_save_notif = AddNotification::saveNotif($id_user, $id_estate_cordinator, 'REPORT COMPLETE', $content_notif, $title_notif);
 
 
 	if ($result_save_notif) {
@@ -95,7 +94,6 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_estate_cordinator']) && !em
 			echo json_encode('FAILL');
 		}
 	} else {
-
 		echo json_encode('FAILL SAVE NOTIF');
 	}
 }

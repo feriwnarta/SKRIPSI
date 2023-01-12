@@ -42,7 +42,7 @@ if (!empty($obj['id_user']) && !empty($obj['id_status'])) {
 
 		$result_add_notif = AddNotification::saveNotif(
 			$user,
-			$data_comment['id_comment'],
+			$id_user,
 			'COMMENT',
 			$comment,
 			$user_comment . ' Menanggapi Postinganmu'
