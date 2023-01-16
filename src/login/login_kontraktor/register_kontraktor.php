@@ -1,48 +1,99 @@
-<?php 
+<?php
 require_once("../../../file/function_proses.php");
 require_once("../../utils/Uuid.php");
 
 $db = new db();
-$json = file_get_contents('php://input');
-$obj = json_decode($json, true);
 
-if(!empty($obj['name_contractor']) && !empty($obj['username']) && !empty($obj['password']) && !empty($obj['id_estate_cordinator']) && !empty($obj['contractor_job'])){
-    $unique_id = UUID::guidv4();
-	$name_contractor = mysqli_real_escape_string($db->query, $obj['name_contractor']);
-	$username = mysqli_real_escape_string($db->query, $obj['username']);
-	$password = mysqli_real_escape_string($db->query, $obj['password']);
-	$id_cordinator = mysqli_real_escape_string($db->query, $obj['id_estate_cordinator']);
-	$ubah1=str_replace("=", "", base64_encode($password));
+
+if (!empty($_POST['name_contractor']) && !empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['id_estate_cordinator']) && !empty($_POST['contractor_job']) && !empty($_POST['email']) && !empty($_POST['no_telp'])) {
+
+
+	$unique_id = UUID::guidv4();
+	$name_contractor = mysqli_real_escape_string($db->query, $_POST['name_contractor']);
+	$username = mysqli_real_escape_string($db->query, $_POST['username']);
+	$password = mysqli_real_escape_string($db->query, $_POST['password']);
+	$no_telp = mysqli_real_escape_string($db->query, $_POST['no_telp']);
+
+	$id_cordinator = mysqli_real_escape_string($db->query, $_POST['id_estate_cordinator']);
+	$email = mysqli_real_escape_string($db->query, $_POST['email']);
+	$contractor_job = explode(',', mysqli_real_escape_string($db->query, $_POST['contractor_job']), -1);
+
+
+	$ubah1 = str_replace("=", "", base64_encode($password));
 	$pengacak = "Bl4ck3rH4ck3r3ncR1pt";
 	$ubah2 = md5($pengacak . md5($ubah1) . $pengacak);
-	$hasil_password = md5($pengacak . md5($ubah2) . $pengacak );
+	$hasil_password = md5($pengacak . md5($ubah2) . $pengacak);
+
 	
-	$cek_user = $db->select('tb_contractor', 'username="' . $username . '"', 'id_contractor', 'ASC');
-	
-	if(mysqli_num_rows($cek_user) > 0) {
-	    echo json_encode('username sudah ada');
-	    
+
+	if (isset($_FILES['foto_profile'])) {
+		$tmp_name = $_FILES['foto_profile']['tmp_name'];
+		$valid_ext = array('png', 'jpeg', 'jpg');
+		// file extension
+		$file_extension = pathinfo($_FILES['foto_profile']['name'], PATHINFO_EXTENSION);
+
+		$file_extension = strtolower($file_extension);
+
+		if (in_array($file_extension, $valid_ext)) {
+			$bytes = random_bytes(20);
+			// $loc = $_SERVER['SERVER_NAME'];
+			$loc = '../../../imageuser/';
+			$image_location = $loc . bin2hex($bytes) . ".$file_extension";
+			move_uploaded_file($tmp_name, $image_location);
+			$ubah = str_replace("../", "", $image_location);
+		}
 	} else {
-    	$result = $db->insert('tb_contractor','id_contractor = "' . $unique_id . '",name_contractor="'.$name_contractor.'",username="'.$username.'",password="'.$hasil_password.'",id_estate_cordinator="'.$id_cordinator.'"');
-    
-    	$select_data=$db->select('tb_contractor','password="'.$hasil_password.'"','id_contractor','DESC');
-        $sd=mysqli_fetch_assoc($select_data);
-    
-    
-    	// contractor job
-    	$contractor_job = $obj['contractor_job'];
-    	$id_contractor_explode = explode(',', mysqli_real_escape_string($db->query, $contractor_job), -1);
-    	
-    	foreach ($id_contractor_explode as $key) {
-    	    $unique_id_job = UUID::guidv4();
-    		$db->insert('tb_contractor_job', 'id_contractor_job = "' . $unique_id_job . '", id_contractor="'.$sd['id_contractor'].'",id_category="'.$key.'"');
-    	}
-    	if($result) {
-    		echo json_encode('Register Successful');
-    	} 		
+		$ubah = 'imageuser/default_profile/blank_profile_picture.jpg';
 	}
 
-	
-}
 
-?>
+	$exist_user = $db->select('tb_user', 'username = "' . $username . '"', 'id_user', 'ASC');
+
+	if (!mysqli_num_rows($exist_user) > 0) {
+
+		if (!mysqli_num_rows($db->select('tb_user', 'email = "' . $email . '"', 'id_user', 'ASC')) > 0) {
+
+			if (!mysqli_num_rows($db->select('tb_user', 'no_telp = "' . $no_telp . '"', 'id_user', 'ASC')) > 0) {
+				$result = $db->insert('tb_contractor', 'id_contractor = "' . $unique_id . '", name_contractor = "' . $name_contractor . '", email = "' . $email . '", no_telp = "' . $no_telp . '", id_estate_cordinator = "' . $id_cordinator . '"');
+
+
+				$result_user = $db->insert('tb_user', 'id_user = "' . $unique_id . '", username = "' . $username . '", email = "' . $email . '", no_telp = "' . $no_telp . '", name="' . $name_contractor . '", password = "' . $hasil_password . '", profile_image = "' . $ubah . '"');
+
+				if ($result_user) {
+					// insert akses
+					$data_auth = $db->select('tb_authorization', 'status = "contractor"', 'id_auth', 'ASC');
+					if (mysqli_num_rows($data_auth) > 0) {
+						$data_auth = mysqli_fetch_assoc($data_auth);
+						$update = $db->update('tb_user', 'id_auth = "' . $data_auth['id_auth'] . '"', 'id_user = "' . $unique_id . '"');
+
+						if ($update) {
+							$result_job = false;	
+							foreach ($contractor_job as $value) {
+								$unique_id_job = UUID::guidv4();
+								$result_job = $db->insert('tb_contractor_job', 'id_contractor_job = "' . $unique_id_job . '", id_contractor="' . $unique_id . '",id_category="' . $value . '"');
+							}
+
+							if($result_job) {
+								echo json_encode('register successfull');
+							} else {
+								echo json_encode('register failed');
+							}
+						} else {
+							echo json_encode('Register failed');
+						}
+					} else {
+						echo json_encode('gagal mengambil id access');
+					}
+				} else {
+					echo json_encode('gagal menyimpan');
+				}
+			} else {
+				echo json_encode('no telpon sudah ada');
+			}
+		} else {
+			echo json_encode('email sudah ada');
+		}
+	} else {
+		echo json_encode('username sudah ada');
+	}
+}
