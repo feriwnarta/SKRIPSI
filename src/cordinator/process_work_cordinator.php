@@ -48,7 +48,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_estate_cordinator'])  && !e
 		echo json_encode('OKE', JSON_PRETTY_PRINT);
 	} else if (isset($ubah1)) {
 		$result = $db->insert('tb_process_work_cordinator', 'id_report="' . $id_report . '", id_estate_cordinator="' . $id_estate_cordinator . '",photo_work_1="' . $ubah1 . '"');
-		$status = 'process';
+		$status = 'Diproses';
 
 		$r = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
 		echo json_encode('OKE', JSON_PRETTY_PRINT);

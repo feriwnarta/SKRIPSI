@@ -32,6 +32,12 @@ $obj = json_decode($json, true);
 				    $photo_process2 = $work_cordinator['photo_work_2'];
 				    $photo_complete1 = $work_cordinator['photo_complete_1'];
 				    $photo_complete2 = $work_cordinator['photo_complete_2'];
+				} else {
+					$status_working = 'cordinator';
+				    $photo_process1 = '';
+				    $photo_process2 = '';
+				    $photo_complete1 = '';
+				    $photo_complete2 = '';
 				}
 				
 				$data[] = array(
@@ -67,4 +73,3 @@ $obj = json_decode($json, true);
 		}		
 
 	}
-?>

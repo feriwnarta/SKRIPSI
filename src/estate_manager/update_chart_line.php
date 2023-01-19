@@ -53,7 +53,7 @@ if (isset($obj['id_user']) && isset($obj['date']) && isset($obj['range_date']) &
         $category = mysqli_fetch_assoc($category);
         // select pekerja kontraktor
         $contractor = $db->select('tb_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'DESC');
-        
+
         $result_category = array();
         $pic = array();
         $name_pic = array();
@@ -90,57 +90,63 @@ if (isset($obj['id_user']) && isset($obj['date']) && isset($obj['range_date']) &
         // data for chart
         $line_chart = $db->select_chart('tb_report', 'create_at', 'id_category = "' . $id_category . '" AND create_at <= "' . $from_date . '" AND create_at >= "' . $to_date . '"');
         $chart = array();
-        while ($data_chart = mysqli_fetch_assoc($line_chart)) {
-            $chart[] = $data_chart['num_rows'];
+
+        if (mysqli_num_rows($line_chart) < 5) {
+            array_push($chart, '100', '100', '100');
         }
+
+
+        while ($data_chart = mysqli_fetch_assoc($line_chart)) {
+            $chart[] = strval(100 - $data_chart['num_rows']);
+        }
+
+
 
 
         // persentase
         $report_now = mysqli_num_rows($report_now);
         $report_past = mysqli_num_rows($report_past);
         $total_report = $report_now + $report_past;
-        
-         if($report_past != 0) {
-                    
-                        if($total_report != 0) {
-                            $persentase = (($report_past - $report_now) / $total_report) * 100;
-                        } else {
-                            $persentase = 100;
-                        }
-                        
-                         if($persentase < 0) {
-                            $persentase = $persentase * -1;
-                            $status = 'minus';
-                        } else {
-                            $status = 'plus';
-                        }
-                        
-                        if($persentase != 100) {
-                            $persentase = sprintf("%.1f", $persentase);    
-                        }
-                        
-                        
-                        $persentase_sekarang = 100 - $persentase;
-                        
-                        if($persentase_sekarang == 0) {
-                            $persentase_sekarang = 100;
-                        }
-                    
-                    
-                    } else {
-                        $persentase_sekarang = 100 - $report_now;
-                        if($persentase_sekarang != 100) {
-                            $persentase = 100 - $persentase_sekarang;   
-                        } else {
-                            $persentase = 100;
-                        }
-                        if($persentase < 100) {
-                            $status = 'minus';
-                        } else {
-                            $status = 'plus';
-                        }
-                    }
-                    
+
+        if ($report_past != 0) {
+
+            if ($total_report != 0) {
+                $persentase = (($report_past - $report_now) / $total_report) * 100;
+            } else {
+                $persentase = 100;
+            }
+
+            if ($persentase < 0) {
+                $persentase = $persentase * -1;
+                $status = 'minus';
+            } else {
+                $status = 'plus';
+            }
+
+            if ($persentase != 100) {
+                $persentase = sprintf("%.1f", $persentase);
+            }
+
+
+            $persentase_sekarang = 100 - $persentase;
+
+            if ($persentase_sekarang == 0) {
+                $persentase_sekarang = 100;
+            }
+        } else {
+            $persentase_sekarang = 100 - $report_now;
+            if ($persentase_sekarang != 100) {
+                $persentase = 100 - $persentase_sekarang;
+            } else {
+                $persentase = 100;
+            }
+            if ($persentase < 100) {
+                $status = 'minus';
+            } else {
+                $status = 'plus';
+            }
+        }
+
 
         $result_category['sebelum'] = $report_past;
         $result_category['sesudah'] = $report_now;

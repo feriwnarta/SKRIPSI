@@ -58,7 +58,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_estate_cordinator']) && !em
 
 	$rswork = $db->update('tb_process_work_cordinator', 'finish_time="' . $finish_time . '", duration="' . $duration . '"', 'id_report="' . $id_report . '"');
 	$rsprocess = $db->insert('tb_process_report', 'id_report="' . $id_report . '", id_estate_cordinator="' . $id_estate_cordinator . '", status_process="' . $message . '"');
-	$status = 'finish';
+	$status = 'Selesai';
 	$rsreport = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
 
 	// ambil id user berdasarkan id report

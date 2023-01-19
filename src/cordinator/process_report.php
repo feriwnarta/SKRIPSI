@@ -17,7 +17,7 @@ if (!empty($obj['id_estate_cordinator']) && !empty($obj['id_report']) && !empty(
 	$result = $db->insert('tb_process_report', 'id_report="' . $id_report . '", id_estate_cordinator="' . $id_estate_cordinator . '",status_process="' . $message . '"');
 
 	if ($result) {
-		$status = 'noticed';
+		$status = 'Diterima';
 		$dt = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
 
 		// ambil id user berdasarkan id report

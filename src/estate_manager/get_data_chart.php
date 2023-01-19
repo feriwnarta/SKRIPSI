@@ -93,8 +93,14 @@ if(isset($obj['id_user']) && isset($obj['date']) && isset($obj['range_date'])) {
                     // data for chart
                     $line_chart = $db->select_chart('tb_report', 'create_at', 'id_category = "' . $id_category . '" AND create_at <= "' . $from_date . '" AND create_at >= "' . $to_date . '"');
                     $chart = array();
+
+                    if(mysqli_num_rows($line_chart) < 5) {
+                        array_push($chart, "100", "100");
+                    }
+
+
                     while($data_chart = mysqli_fetch_assoc($line_chart)) {
-                        $chart[] = $data_chart['num_rows'];
+                        $chart[] = strval( 100 - $data_chart['num_rows']);
                     }
                     
                     
