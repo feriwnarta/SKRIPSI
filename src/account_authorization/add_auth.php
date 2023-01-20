@@ -5,7 +5,7 @@ $db = new db();
 $json = file_get_contents('php://input');
 $obj = json_decode($json, true);
 
-if (isset($obj['id_user']) && isset($obj['status'])) {
+if (isset($obj['status'])) {
     $status =  mysqli_real_escape_string($db->query, ($obj['status']));
 
     $unique_id = UUID::guidv4();
