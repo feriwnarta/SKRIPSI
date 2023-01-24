@@ -9,7 +9,7 @@ if (isset($obj['id_user']) && isset($obj['type_worker']) && isset($obj['category
     $status = mysqli_real_escape_string($db->query, $obj['type_worker']);
     $category = mysqli_real_escape_string($db->query, $obj['category']);
 
-    if ($status == 'cordinator') {
+    if ($status == 'CORDINATOR' || $status == 'BETA TEST') {
         // get id master category berdasarkan category
         $id_master_category = $db->select('tb_category', 'category="' . $category . '"', 'id_category', 'ASC');
         $id_master_category = mysqli_fetch_assoc($id_master_category);

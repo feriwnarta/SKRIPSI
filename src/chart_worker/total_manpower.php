@@ -12,7 +12,7 @@ if (isset($obj['id_user']) && isset($obj['type_worker'])) {
     // hari ini
     $hri_ini = date('Y-m-d');
 
-    if ($status === 'cordinator') {
+    if ($status === 'CORDINATOR' || $status == 'BETA TEST') {
         $result = $db->select('tb_manpower_cordinator', 'current_day LIKE "%' . $hri_ini . '%"', 'id_manpower', 'DESC');
         if (mysqli_num_rows($result) > 0) {
             $data = array();
