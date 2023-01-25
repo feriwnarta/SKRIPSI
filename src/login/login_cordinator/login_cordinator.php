@@ -24,14 +24,14 @@ if(!empty($obj['username']) && !empty($obj['password']) && !empty($obj['token'])
 		
 		$date = date('Y-m-d H:i:s');
 		
-		$cek_token = $db->select('tb_cordinator_fcm_token', 'id_estate_cordinator = "' . $u['id_user'] . '"', 'id_token', 'ASC');
+		$cek_token = $db->select('tb_user_fcm_token', 'id_user = "' . $u['id_user'] . '"', 'id_token', 'ASC');
 		
 		if(mysqli_num_rows($cek_token) > 0) {
 		    // update fcm token
-	        $update_token = $db->update('tb_cordinator_fcm_token', 'token="' . $token . '", update_at="' . $date . '"', 'id_estate_cordinator="' . $u['id_user'] . '"');    
+	        $update_token = $db->update('tb_user_fcm_token', 'token="' . $token . '", update_at="' . $date . '"', 'id_user="' . $u['id_user'] . '"');    
 		    
 		} else {
-		    $result = $db->insert('tb_cordinator_fcm_token', 'id_token = "' . $unique_id . '", id_estate_cordinator = "' . $u['id_user'] . '", token = "' . $token . '"');
+		    $result = $db->insert('tb_user_fcm_token', 'id_token = "' . $unique_id . '", id_user = "' . $u['id_user'] . '", token = "' . $token . '"');
 		    
 		    if(!$result) {
 		        echo json_encode('gagal update token cordinator');

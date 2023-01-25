@@ -6,12 +6,17 @@ $obj = json_decode($json, true);
 date_default_timezone_set('asia/jakarta');
 
 if (isset($obj['id_cordinator'])) {
+
+	
+
 	if (!empty($obj['id_cordinator'])) {
 		$start = mysqli_real_escape_string($db->query, ($obj['start']));
 		$limit = mysqli_real_escape_string($db->query, ($obj['limit']));
 		$id_cordinator = mysqli_real_escape_string($db->query, ($obj['id_cordinator']));
 		// select data cordinator job
 		$job_cordinator = $db->select('tb_estate_cordinator_job', 'id_estate_cordinator="' . $id_cordinator . '"', 'id_estate_cordinator', 'DESC');
+
+
 		$id_cordinator_2 = mysqli_fetch_assoc($job_cordinator);
 		$job_data = $db->select('tb_master_category', 'id_master_category="' . $id_cordinator_2['id_master_category'] . '"', 'id_master_category', 'DESC');
 		$id_master_category = mysqli_fetch_assoc($job_data);
