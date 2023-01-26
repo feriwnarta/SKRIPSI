@@ -11,8 +11,8 @@ if (!empty($obj['id_contractor'])) {
     $id_contractor = mysqli_real_escape_string($db->query, ($obj['id_contractor']));
     // select data cordinator job
     $job_contractor = $db->select('tb_contractor_job', 'id_contractor="' . $id_contractor . '"', 'id_contractor_job', 'ASC');
-    $status1 = 'process';
-    $status2 = 'process';
+    $status1 = 'Diproses';
+    $status2 = 'Diproses';
     while ($result = mysqli_fetch_assoc($job_contractor)) {
         $cek = $db->selectpage('tb_report', 'id_category="' . $result['id_category'] . '" AND (status ="' . $status1 . '" OR status ="' . $status2 . '")', 'id_report', 'DESC', $start, $limit);
         if (mysqli_num_rows($cek) > 0) {

@@ -5,7 +5,8 @@ class WhatsappOtp
     static function sendOtp($targetPhone, $message)
     {
         $curl = curl_init();
-        $token = "IL1VsEauUbDPWs78ErqPYkvA323H9uTkvtD3f72ODNXR9XDpYXdCnC0YtbNezi33";
+        // $token = "IL1VsEauUbDPWs78ErqPYkvA323H9uTkvtD3f72ODNXR9XDpYXdCnC0YtbNezi33";
+        $token = "d440185ImAQSnbiUgDIp9owIdrYPIGTd1ERlxjPfETLIgZ89UEshc4WDOe2FKAut";
 
         $data = [
             'phone' => $targetPhone,

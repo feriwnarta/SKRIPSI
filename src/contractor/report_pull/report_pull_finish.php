@@ -11,8 +11,8 @@ if (!empty($obj['id_contractor'])) {
     $id_contractor = mysqli_real_escape_string($db->query, ($obj['id_contractor']));
     // select data cordinator job
     $job_contractor = $db->select('tb_contractor_job', 'id_contractor="' . $id_contractor . '"', 'id_contractor_job', 'ASC');
-    $status1 = 'finish';
-    $status2 = 'finish';
+    $status1 = 'Selesai';
+    $status2 = 'Selesai';
     while ($result = mysqli_fetch_assoc($job_contractor)) {
         $cek = $db->selectpage('tb_report', 'id_category="' . $result['id_category'] . '" AND (status ="' . $status1 . '" OR status ="' . $status2 . '")', 'id_report', 'DESC', $start, $limit);
         if (mysqli_num_rows($cek) > 0) {
@@ -53,40 +53,40 @@ if (!empty($obj['id_contractor'])) {
             }
         }
     }
-    
-    if(!empty($data_balik)) {
-		echo json_encode($data_balik, JSON_PRETTY_PRINT);
-	} else {
-		echo json_encode(array(), JSON_PRETTY_PRINT);
-	}
 
+    if (!empty($data_balik)) {
+        echo json_encode($data_balik, JSON_PRETTY_PRINT);
+    } else {
+        echo json_encode(array(), JSON_PRETTY_PRINT);
+    }
 }
 
-function time_elapsed_string($datetime, $full = false) {
-	    $now = new DateTime;
-	    $ago = new DateTime($datetime);
-	    $diff = $now->diff($ago);
+function time_elapsed_string($datetime, $full = false)
+{
+    $now = new DateTime;
+    $ago = new DateTime($datetime);
+    $diff = $now->diff($ago);
 
-	    $diff->w = floor($diff->d / 7);
-	    $diff->d -= $diff->w * 7;
+    $diff->w = floor($diff->d / 7);
+    $diff->d -= $diff->w * 7;
 
-	    $string = array(
-	        'y' => 'tahun',
-	        'm' => 'bulan',
-	        'w' => 'minggu',
-	        'd' => 'hari',
-	        'h' => 'jam',
-	        'i' => 'menit',
-	        's' => 'detik',
-	    );
-	    foreach ($string as $k => &$v) {
-	        if ($diff->$k) {
-	            $v = $diff->$k . ' ' . $v;
-	        } else {
-	            unset($string[$k]);
-	        }
-	    }
+    $string = array(
+        'y' => 'tahun',
+        'm' => 'bulan',
+        'w' => 'minggu',
+        'd' => 'hari',
+        'h' => 'jam',
+        'i' => 'menit',
+        's' => 'detik',
+    );
+    foreach ($string as $k => &$v) {
+        if ($diff->$k) {
+            $v = $diff->$k . ' ' . $v;
+        } else {
+            unset($string[$k]);
+        }
+    }
 
-	    if (!$full) $string = array_slice($string, 0, 1);
-	    return $string ? implode(', ', $string) . '' : '';
+    if (!$full) $string = array_slice($string, 0, 1);
+    return $string ? implode(', ', $string) . '' : '';
 }
