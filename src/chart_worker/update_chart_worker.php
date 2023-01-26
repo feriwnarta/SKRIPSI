@@ -97,6 +97,7 @@ if (isset($obj['id_user']) && isset($obj['category'])) {
 
     $data_dropdown = $db->select('tb_manager_contractor_job', 'id_manager_contractor = "' . $id_user . '" ', 'id_category', 'DESC');
 
+
     if (mysqli_num_rows($data_dropdown) > 0) {
         while ($result_dropdown = mysqli_fetch_assoc($data_dropdown)) {
             $id_category = $result_dropdown['id_category'];
@@ -126,6 +127,43 @@ if (isset($obj['id_user']) && isset($obj['category'])) {
                         'subtitle' => $data_category,
                     );
                 }
+            }
+        } else {
+            $data_dropdown = $db->select('tb_estate_cordinator_job', 'id_estate_cordinator = "' . $id_user . '" ', 'id_master_category', 'DESC');
+            if (mysqli_num_rows($data_dropdown) > 0) {
+                $master_category = mysqli_fetch_assoc($data_dropdown)['id_master_category'];
+
+                $data_category = $db->select('tb_category', 'id_master_category = "' . $master_category . '"', 'id_category', 'ASC');
+
+                if (mysqli_num_rows($data_category) > 0) {
+                    while ($result_category = mysqli_fetch_assoc($data_category)) {
+                        $name_category = $result_category['category'];
+
+                        if ($name_category != $subtitle) {
+                            $data_balik[] = array(
+                                'title' => $title,
+                                'subtitle' => $name_category,
+                            );
+                        }
+                    }
+                } else {
+                }
+
+
+
+                // while ($result_dropdown = mysqli_fetch_assoc($data_dropdown)) {
+                //     $id_category = $result_dropdown['id_category'];
+                //     $data_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+
+                //     $data_category = mysqli_fetch_assoc($data_category)['category'];
+
+                //     if ($data_category != $subtitle) {
+                //         $data_balik[] = array(
+                //             'title' => $title,
+                //             'subtitle' => $data_category,
+                //         );
+                //     }
+                // }
             }
         }
     }

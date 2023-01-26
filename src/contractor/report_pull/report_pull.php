@@ -100,6 +100,18 @@ if (!empty($obj['id_contractor'])) {
                     }
                 }
             }
+        } else {
+            $job_contractor = $db->select('tb_estate_cordinator_job', 'id_estate_cordinator="' . $id_contractor . '"', 'id_estate_cordinator_job', 'ASC');
+
+            if (mysqli_num_rows($job_contractor) > 0) {
+                $master_category = mysqli_fetch_assoc($job_contractor)['id_master_category'];
+                
+
+                //! QUERY REPORT UNTUK ESTATE CORDINATOR JOB
+                //! BERDASARKAN ID MASTER CATEGORY, KEMUDIAN TERUSKAN KE REPORT PULL PROCESS, DAN FINIS
+
+            } else {
+            }
         }
     }
 
