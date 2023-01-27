@@ -1,0 +1,12 @@
+[18-Aug-2022 11:53:53 asia/jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function time_elapsed_string() in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull.php:42
+Stack trace:
+#0 {main}
+  thrown in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull.php on line 42
+[18-Aug-2022 11:54:25 asia/jakarta] PHP Fatal error:  Uncaught Error: Call to undefined function time_elapsed_string() in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull.php:42
+Stack trace:
+#0 {main}
+  thrown in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull.php on line 42
+[26-Aug-2022 14:29:40 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull_process.php on line 18
+[26-Aug-2022 14:29:59 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull_process.php on line 18
+[26-Aug-2022 14:31:01 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull_process.php on line 18
+[26-Aug-2022 14:31:12 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/contractor/report_pull/report_pull.php on line 18

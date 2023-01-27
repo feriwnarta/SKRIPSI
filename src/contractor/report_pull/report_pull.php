@@ -14,8 +14,13 @@ if (!empty($obj['id_contractor'])) {
     if (mysqli_num_rows($job_contractor) > 0) {
         $status1 = 'Menunggu';
         $status2 = 'Diterima';
+
+        $status3 = 'Eskalasi tingkat 1';
+        $status4 = 'Eskalasi tingkat 2';
+        $status5 = 'Eskalasi tingkat 3';
+
         while ($result = mysqli_fetch_assoc($job_contractor)) {
-            $cek = $db->selectpage('tb_report', 'id_category="' . $result['id_category'] . '" AND (status ="' . $status1 . '" OR status ="' . $status2 . '")', 'id_report', 'DESC', $start, $limit);
+            $cek = $db->selectpage('tb_report', 'id_category="' . $result['id_category'] . '" AND status ="' . $status1 . '" OR status ="' . $status2 . '" OR status = "' . $status3 . '" OR status = "' . $status4 . '" OR status = "' . $status5 . '"', 'id_report', 'DESC', $start, $limit);
             if (mysqli_num_rows($cek) > 0) {
                 while ($dt = mysqli_fetch_assoc($cek)) {
                     $time_post = (new DateTime($dt['time_post']))->format("H:i");
@@ -130,11 +135,15 @@ if (!empty($obj['id_contractor'])) {
                 $status1 = 'Menunggu';
                 $status2 = 'Diterima';
 
+                $status3 = 'Eskalasi tingkat 1';
+                $status4 = 'Eskalasi tingkat 2';
+                $status5 = 'Eskalasi tingkat 3';
+
                 while ($result_category = mysqli_fetch_assoc($data_category)) {
 
                     $id_category = $result_category['id_category'];
 
-                    $cek = $db->selectpage('tb_report', 'id_category="' . $id_category . '" AND (status ="' . $status1 . '" OR status ="' . $status2 . '")', 'id_report', 'DESC', $start, $limit);
+                    $cek = $db->selectpage('tb_report', 'id_category="' . $id_category . '" AND status ="' . $status1 . '" OR status ="' . $status2 . '"', 'id_report', 'DESC', $start, $limit);
 
                     if (mysqli_num_rows($cek) > 0) {
                         while ($dt = mysqli_fetch_assoc($cek)) {
