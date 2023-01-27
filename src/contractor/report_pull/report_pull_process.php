@@ -35,24 +35,47 @@ if (!empty($obj['id_contractor'])) {
                     if (count($explode_data) == 2) {
                         $data_result = $explode_data[0];
                     }
+
+
                     $datetime = $dt['date_post'] . ' ' .  $dt['time_post'];
-                    $data_balik[] = array(
-                        'id_report' => $dt['id_report'],
-                        'id_user' => $dt['id_user'],
-                        'no_ticket' => $dt['no_ticket'],
-                        'description' => $dt['description'],
-                        'date_post' => $date_post,
-                        'time_post' => time_elapsed_string($datetime),
-                        'category' => $dt['category'],
-                        'id_category' => $dt['id_category'],
-                        'icon_category' => $icon['icon'],
-                        'latitude' => $dt['latitude'],
-                        'longitude' => $dt['longitude'],
-                        'url_image' => $dt['url_image'],
-                        'status' => $dt['status'],
-                        'address' => $dt['address'],
-                        'category_detail' => $data_result
-                    );
+
+                    if ($dt['status_eskalasi'] == '') {
+                        $data_balik[] = array(
+                            'id_report' => $dt['id_report'],
+                            'id_user' => $dt['id_user'],
+                            'no_ticket' => $dt['no_ticket'],
+                            'description' => $dt['description'],
+                            'date_post' => $date_post,
+                            'time_post' => time_elapsed_string($datetime),
+                            'category' => $dt['category'],
+                            'id_category' => $dt['id_category'],
+                            'icon_category' => $icon['icon'],
+                            'latitude' => $dt['latitude'],
+                            'longitude' => $dt['longitude'],
+                            'url_image' => $dt['url_image'],
+                            'status' => $dt['status'],
+                            'address' => $dt['address'],
+                            'category_detail' => $data_result
+                        );
+                    } else {
+                        $data_balik[] = array(
+                            'id_report' => $dt['id_report'],
+                            'id_user' => $dt['id_user'],
+                            'no_ticket' => $dt['no_ticket'],
+                            'description' => $dt['description'],
+                            'date_post' => $date_post,
+                            'time_post' => time_elapsed_string($datetime),
+                            'category' => $dt['category'],
+                            'id_category' => $dt['id_category'],
+                            'icon_category' => $icon['icon'],
+                            'latitude' => $dt['latitude'],
+                            'longitude' => $dt['longitude'],
+                            'url_image' => $dt['url_image'],
+                            'status' => $dt['status_eskalasi'],
+                            'address' => $dt['address'],
+                            'category_detail' => $data_result
+                        );
+                    }
                 }
             }
         }
@@ -82,7 +105,6 @@ if (!empty($obj['id_contractor'])) {
                             $data_result = $explode_data[0];
                         }
 
-
                         //pic
                         $pic = $db->select('tb_contractor_job', 'id_category = "' . $dt['id_category'] . '"', 'id_category', 'ASC');
 
@@ -99,24 +121,46 @@ if (!empty($obj['id_contractor'])) {
                         }
 
                         $datetime = $dt['date_post'] . ' ' .  $dt['time_post'];
-                        $data_balik[] = array(
-                            'id_report' => $dt['id_report'],
-                            'id_user' => $dt['id_user'],
-                            'no_ticket' => $dt['no_ticket'],
-                            'description' => $dt['description'],
-                            'date_post' => $date_post,
-                            'time_post' => time_elapsed_string($datetime),
-                            'category' => $dt['category'],
-                            'id_category' => $dt['id_category'],
-                            'icon_category' => $icon['icon'],
-                            'latitude' => $dt['latitude'],
-                            'longitude' => $dt['longitude'],
-                            'url_image' => $dt['url_image'],
-                            'status' => $dt['status'],
-                            'address' => $dt['address'],
-                            'kepala_contractor' => $data_balik_pic,
-                            'category_detail' => $data_result
-                        );
+
+                        if ($dt['status_eskalasi'] == '') {
+                            $data_balik[] = array(
+                                'id_report' => $dt['id_report'],
+                                'id_user' => $dt['id_user'],
+                                'no_ticket' => $dt['no_ticket'],
+                                'description' => $dt['description'],
+                                'date_post' => $date_post,
+                                'time_post' => time_elapsed_string($datetime),
+                                'category' => $dt['category'],
+                                'id_category' => $dt['id_category'],
+                                'icon_category' => $icon['icon'],
+                                'latitude' => $dt['latitude'],
+                                'longitude' => $dt['longitude'],
+                                'url_image' => $dt['url_image'],
+                                'status' => $dt['status'],
+                                'address' => $dt['address'],
+                                'kepala_contractor' => $data_balik_pic,
+                                'category_detail' => $data_result
+                            );
+                        } else {
+                            $data_balik[] = array(
+                                'id_report' => $dt['id_report'],
+                                'id_user' => $dt['id_user'],
+                                'no_ticket' => $dt['no_ticket'],
+                                'description' => $dt['description'],
+                                'date_post' => $date_post,
+                                'time_post' => time_elapsed_string($datetime),
+                                'category' => $dt['category'],
+                                'id_category' => $dt['id_category'],
+                                'icon_category' => $icon['icon'],
+                                'latitude' => $dt['latitude'],
+                                'longitude' => $dt['longitude'],
+                                'url_image' => $dt['url_image'],
+                                'status' => $dt['status_eskalasi'],
+                                'address' => $dt['address'],
+                                'kepala_contractor' => $data_balik_pic,
+                                'category_detail' => $data_result
+                            );
+                        }
                     }
                 }
             }
@@ -171,25 +215,45 @@ if (!empty($obj['id_contractor'])) {
                                 );
                             }
 
-
-                            $data_balik[] = array(
-                                'id_report' => $dt['id_report'],
-                                'id_user' => $dt['id_user'],
-                                'no_ticket' => $dt['no_ticket'],
-                                'description' => $dt['description'],
-                                'date_post' => $date_post,
-                                'time_post' => time_elapsed_string($datetime),
-                                'category' => $dt['category'],
-                                'id_category' => $dt['id_category'],
-                                'icon_category' => $icon['icon'],
-                                'latitude' => $dt['latitude'],
-                                'longitude' => $dt['longitude'],
-                                'url_image' => $dt['url_image'],
-                                'status' => $dt['status'],
-                                'address' => $dt['address'],
-                                'manager_contractor' => $data_balik_pic,
-                                'category_detail' => $data_result
-                            );
+                            if ($dt['status_eskalasi'] == '') {
+                                $data_balik[] = array(
+                                    'id_report' => $dt['id_report'],
+                                    'id_user' => $dt['id_user'],
+                                    'no_ticket' => $dt['no_ticket'],
+                                    'description' => $dt['description'],
+                                    'date_post' => $date_post,
+                                    'time_post' => time_elapsed_string($datetime),
+                                    'category' => $dt['category'],
+                                    'id_category' => $dt['id_category'],
+                                    'icon_category' => $icon['icon'],
+                                    'latitude' => $dt['latitude'],
+                                    'longitude' => $dt['longitude'],
+                                    'url_image' => $dt['url_image'],
+                                    'status' => $dt['status'],
+                                    'address' => $dt['address'],
+                                    'manager_contractor' => $data_balik_pic,
+                                    'category_detail' => $data_result
+                                );
+                            } else {
+                                $data_balik[] = array(
+                                    'id_report' => $dt['id_report'],
+                                    'id_user' => $dt['id_user'],
+                                    'no_ticket' => $dt['no_ticket'],
+                                    'description' => $dt['description'],
+                                    'date_post' => $date_post,
+                                    'time_post' => time_elapsed_string($datetime),
+                                    'category' => $dt['category'],
+                                    'id_category' => $dt['id_category'],
+                                    'icon_category' => $icon['icon'],
+                                    'latitude' => $dt['latitude'],
+                                    'longitude' => $dt['longitude'],
+                                    'url_image' => $dt['url_image'],
+                                    'status' => $dt['status_eskalasi'],
+                                    'address' => $dt['address'],
+                                    'manager_contractor' => $data_balik_pic,
+                                    'category_detail' => $data_result
+                                );
+                            }
                         }
                     }
                 }
