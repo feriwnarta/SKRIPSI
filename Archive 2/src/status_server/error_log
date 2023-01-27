@@ -1,0 +1,1 @@
+[01-Sep-2022 02:29:03 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/status_server/dologin.php on line 9

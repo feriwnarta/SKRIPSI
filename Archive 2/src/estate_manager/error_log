@@ -1,0 +1,5 @@
+[26-Dec-2022 16:24:23 asia/jakarta] PHP Fatal error:  Uncaught Exception: DateTime::__construct(): Failed to parse time string (2022-26-13 16:24:23) at position 6 (6): Unexpected character in /home/u1711122/public_html/app/src/estate_manager/get_data_chart.php:20
+Stack trace:
+#0 /home/u1711122/public_html/app/src/estate_manager/get_data_chart.php(20): DateTime->__construct('2022-26-13 16:2...', Object(DateTimeZone))
+#1 {main}
+  thrown in /home/u1711122/public_html/app/src/estate_manager/get_data_chart.php on line 20
