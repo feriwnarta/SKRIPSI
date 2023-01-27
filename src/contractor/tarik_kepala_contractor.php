@@ -7,7 +7,7 @@ $obj = json_decode($json, true);
 
 
 if (isset($obj['id_user'])) {
-    $data = $db->select('tb_estate_cordinator', 'id_estate_cordinator NOT IN ("")', 'id_estate_cordinator', 'ASC');
+    $data = $db->select('tb_contractor', 'id_estate_cordinator NOT IN ("")', 'id_contractor', 'ASC');
 
     $data_return = array();
 

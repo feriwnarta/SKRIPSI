@@ -13,6 +13,15 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker']) && !empty($_POST[
     $finish_time = mysqli_real_escape_string($db->query, $_POST['finish_time']);
     $duration = mysqli_real_escape_string($db->query, $_POST['duration']);
     $message = 'Laporan Selesai';
+
+    $contractor_exist = $db->select('tb_contractor', 'id_contractor = "' . $id_worker . '"', 'id_contractor', 'ASC');
+
+    if (mysqli_num_rows($contractor_exist) > 0) {
+
+        $contractor_exist = mysqli_fetch_assoc($contractor_exist);
+        $message = 'Laporan selesai dikerjakan oleh kepala kontraktor (' . $contractor_exist['name_contractor'] . ')';
+    }
+
     // foto
     if (isset($_FILES['image1'])) {
         $image1 = $_FILES['image1'];

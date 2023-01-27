@@ -54,7 +54,7 @@ if (!empty($_POST['name_estate_manager']) && !empty($_POST['username']) && !empt
 
                 if ($result_user) {
                     // insert akses
-                    $data_auth = $db->select('tb_authorization', 'status = "estate manager"', 'id_auth', 'ASC');
+                    $data_auth = $db->select('tb_authorization', 'status = "estatemanager"', 'id_auth', 'ASC');
                     if (mysqli_num_rows($data_auth) > 0) {
                         $data_auth = mysqli_fetch_assoc($data_auth);
                         $update = $db->update('tb_user', 'id_auth = "' . $data_auth['id_auth'] . '"', 'id_user = "' . $unique_id . '"');

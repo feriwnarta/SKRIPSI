@@ -12,6 +12,7 @@ if (isset($obj['id_user']) && isset($obj['status']) && isset($obj['start']) && i
     $start = mysqli_real_escape_string($db->query, $obj['start']);
     $limit = mysqli_real_escape_string($db->query, $obj['limit']);
 
+
     if ($status == 'Semua') {
         $data_report = $db->selectpage('tb_report', 'id_report', 'id_report', 'DESC', $start, $limit);
 
@@ -47,8 +48,8 @@ if (isset($obj['id_user']) && isset($obj['status']) && isset($obj['start']) && i
         $cordinator_job = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $status . '"', 'id_master_category', 'ASC');
         $data_cordinator_job = array();
 
-        
-        
+
+
         while ($result_cordinator_job = mysqli_fetch_assoc($cordinator_job)) {
             $id_estate_cordinator = $result_cordinator_job['id_estate_cordinator'];
             $data_estate_cordinator = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_estate_cordinator . '"', 'id_estate_cordinator', 'ASC');

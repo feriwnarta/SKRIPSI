@@ -53,7 +53,7 @@ if (!empty($_POST['name_estate_cordinator']) && !empty($_POST['username']) && !e
 
 				$result = $db->insert('tb_estate_cordinator', 'id_estate_cordinator = "' . $unique_id . '", name_estate_cordinator = "' . $name_estate_cordinator . '", email = "' . $email . '", no_telp = "' . $no_telp . '"');
 
-				$result_user = $db->insert('tb_user', 'id_user = "' . $unique_id . '", username = "' . $username . '", email = "' . $email . '", no_telp = "' . $no_telp . '", name="' . $name_estate_cordinatorc . '", password = "' . $hasil_password . '", profile_image = "' . $ubah . '"');
+				$result_user = $db->insert('tb_user', 'id_user = "' . $unique_id . '", username = "' . $username . '", email = "' . $email . '", no_telp = "' . $no_telp . '", name="' . $name_estate_cordinator . '", password = "' . $hasil_password . '", profile_image = "' . $ubah . '"');
 
 				if ($result_user) {
 					// insert akses

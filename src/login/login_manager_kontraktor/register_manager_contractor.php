@@ -58,9 +58,6 @@ if (isset($_POST['name_manager']) && isset($_POST['username']) && isset($_POST['
 
 
             $result_user = $db->insert('tb_user', 'id_user = "' . $unique_id . '", username = "' . $username . '", email = "' . $email . '", no_telp = "' . $no_telp . '", name="' . $name_manager . '", password = "' . $hasil_password . '", profile_image = "' . $ubah . '"');
-            
-
-            var_dump($result_user);
 
 
 

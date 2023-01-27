@@ -24,7 +24,7 @@ $obj = json_decode($json, true);
 					$data_result[] = $val['klasifikasi'];
 				}
 				$status_working;
-				$work_cordinator = $db->select('tb_process_work_cordinator', 'id_report="' . $value['id_report'] .'"', 'id_process_work', 'DESC');
+				$work_cordinator = $db->select('tb_process_work', 'id_report="' . $value['id_report'] .'"', 'id_process_work', 'DESC');
 				if(mysqli_num_rows($work_cordinator) > 0) {
 				    $status_working = 'cordinator';
 				    $work_cordinator = mysqli_fetch_assoc($work_cordinator);

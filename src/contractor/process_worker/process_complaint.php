@@ -13,6 +13,14 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
     $id_contractor = mysqli_real_escape_string($db->query, ($_POST['id_worker']));
     $message = 'Laporan diproses';
 
+    $contractor_exist = $db->select('tb_contractor', 'id_contractor = "' . $id_contractor . '"', 'id_contractor', 'ASC');
+
+    if (mysqli_num_rows($contractor_exist) > 0) {
+
+        $contractor_exist = mysqli_fetch_assoc($contractor_exist);
+        $message = 'Laporan diproses oleh kepala kontraktor (' . $contractor_exist['name_contractor'] . ')';
+    }
+
 
     if (isset($_FILES['image1']) || isset($_FILES['image2'])) {
         if (isset($_FILES['image1'])) {
@@ -57,6 +65,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
             }
         } else if (isset($ubah1)) {
             $result = $db->insert('tb_process_work', 'id_report="' . $id_report . '", id_worker="' . $id_contractor . '",photo_work_1="' . $ubah1 . '"');
+
             if ($result) {
                 $status = 'Diproses';
                 $r = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
@@ -74,7 +83,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
             }
         }
 
-        
+
 
 
         $rs = $db->insert('tb_process_report', 'id_report="' . $id_report . '", id_worker="' . $id_contractor . '",status_process="' . $message . '"');
