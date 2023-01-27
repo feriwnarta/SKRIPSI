@@ -18,7 +18,7 @@ if (!empty($obj['id_worker']) && !empty($obj['id_report'])) {
     $message = 'Laporan diterima';
 
     if (mysqli_num_rows($contractor_exist) > 0) {
-        
+
         $contractor_exist = mysqli_fetch_assoc($contractor_exist);
         $message = 'Laporan Diterima oleh kepala kontraktor (' . $contractor_exist['name_contractor'] . ')';
     }
@@ -27,7 +27,7 @@ if (!empty($obj['id_worker']) && !empty($obj['id_report'])) {
 
     if ($result) {
         $status = 'Diterima';
-        $dt = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
+        $dt = $db->update('tb_report', 'status="' . $status . '", status_eskalasi = ""', 'id_report="' . $id_report . '"');
 
         if ($dt) {
             // ambil id user berdasarkan id report
@@ -36,6 +36,9 @@ if (!empty($obj['id_worker']) && !empty($obj['id_report'])) {
             $body = 'Laporan anda "' . $id_user['no_ticket'] . '" telah diterima';
             $category = $id_user['category'];
             $id_user = $id_user['id_user'];
+
+
+            // hapus eskalasi
 
 
 

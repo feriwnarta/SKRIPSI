@@ -16,7 +16,9 @@ if (!empty($obj['id_contractor'])) {
         $status2 = 'Diterima';
 
         while ($result = mysqli_fetch_assoc($job_contractor)) {
-            $cek = $db->selectpage('tb_report', 'id_category="' . $result['id_category'] . '" AND status ="' . $status1 . '" OR status ="' . $status2 . '"', 'id_report', 'DESC', $start, $limit);
+            $cek = $db->selectpage('tb_report', 'id_category="' . $result['id_category'] . '" AND (status ="' . $status1 . '" OR status ="' . $status2 . '")', 'id_report', 'DESC', $start, $limit);
+
+
             if (mysqli_num_rows($cek) > 0) {
                 while ($dt = mysqli_fetch_assoc($cek)) {
                     $time_post = (new DateTime($dt['time_post']))->format("H:i");
@@ -169,20 +171,18 @@ if (!empty($obj['id_contractor'])) {
             if (mysqli_num_rows($job_contractor) > 0) {
                 $master_category = mysqli_fetch_assoc($job_contractor)['id_master_category'];
 
+
                 $data_category = $db->select('tb_category', 'id_master_category = "' . $master_category . '"', 'id_category', 'ASC');
 
                 $status1 = 'Menunggu';
                 $status2 = 'Diterima';
 
-                $status3 = 'Eskalasi tingkat 1';
-                $status4 = 'Eskalasi tingkat 2';
-                $status5 = 'Eskalasi tingkat 3';
-
                 while ($result_category = mysqli_fetch_assoc($data_category)) {
+
 
                     $id_category = $result_category['id_category'];
 
-                    $cek = $db->selectpage('tb_report', 'id_category="' . $id_category . '" AND status ="' . $status1 . '" OR status ="' . $status2 . '"', 'id_report', 'DESC', $start, $limit);
+                    $cek = $db->selectpage('tb_report', 'id_category="' . $id_category . '" AND (status ="' . $status1 . '" OR status ="' . $status2 . '")', 'id_report', 'DESC', $start, $limit);
 
                     if (mysqli_num_rows($cek) > 0) {
                         while ($dt = mysqli_fetch_assoc($cek)) {
@@ -218,6 +218,7 @@ if (!empty($obj['id_contractor'])) {
                                     'no_telp' => $data_contractor['no_telp']
                                 );
                             }
+
 
                             if ($dt['status_eskalasi'] == '') {
                                 $data_balik[] = array(

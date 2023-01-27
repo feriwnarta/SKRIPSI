@@ -59,7 +59,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
 
             if ($result) {
                 $status = 'Diproses';
-                $r = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
+                $r = $db->update('tb_report', 'status="' . $status . '", status_eskalasi = ""', 'id_report="' . $id_report . '"');
                 // echo json_encode('OKE', JSON_PRETTY_PRINT);
                 $isUpdate = true;
             }
@@ -68,7 +68,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
 
             if ($result) {
                 $status = 'Diproses';
-                $r = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
+                $r = $db->update('tb_report', 'status="' . $status . '", status_eskalasi = ""', 'id_report="' . $id_report . '"');
                 // echo json_encode('OKE', JSON_PRETTY_PRINT);
                 $isUpdate = true;
             }
@@ -77,7 +77,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
             $status = 'Diproses';
             if ($result) {
                 $status = 'Diproses';
-                $r = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
+                $r = $db->update('tb_report', 'status="' . $status . '", status_eskalasi = ""', 'id_report="' . $id_report . '"');
                 // echo json_encode('OKE', JSON_PRETTY_PRINT);
                 $isUpdate = true;
             }

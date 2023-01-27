@@ -68,7 +68,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker']) && !empty($_POST[
     $rswork = $db->update('tb_process_work', 'finish_time="' . $finish_time . '", duration="' . $duration . '"', 'id_report="' . $id_report . '"');
     $rsprocess = $db->insert('tb_process_report', 'id_report="' . $id_report . '", id_worker="' . $id_worker . '", status_process="' . $message . '"');
     $status = 'Selesai';
-    $rsreport = $db->update('tb_report', 'status="' . $status . '"', 'id_report="' . $id_report . '"');
+    $rsreport = $db->update('tb_report', 'status="' . $status . '", status_eskalasi = ""', 'id_report="' . $id_report . '"');
 
     // ambil id user berdasarkan id report
     $id_user = $db->select('tb_report', 'id_report="' . $id_report . '"', 'id_report', 'DESC');
