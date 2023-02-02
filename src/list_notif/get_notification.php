@@ -35,6 +35,8 @@ if (isset($obj['id_user'])) {
     } else {
         echo json_encode('EMPTY');
     }
+} else {
+    
 }
 
 

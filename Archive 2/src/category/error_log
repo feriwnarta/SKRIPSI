@@ -1,1 +1,0 @@
-[10-Nov-2022 09:39:54 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/category/klasifikasi_category.php on line 12

@@ -3,6 +3,7 @@ require_once('../../file/function_proses.php');
 $db = new db();
 $json = file_get_contents('php://input');
 $obj = json_decode($json, true);
+date_default_timezone_set('asia/jakarta');
 
 if (isset($obj['id_user']) && isset($obj['category'])) {
     $id_user = mysqli_real_escape_string($db->query, $obj['id_user']);
@@ -37,12 +38,10 @@ if (isset($obj['id_user']) && isset($obj['category'])) {
     $jam_1  = getChartByHour($date_0, $date_1, $id_category, $db);
 
     // data untuk persentase
-    $res = $db->select('tb_report', 'id_category="' . $id_category . '" AND CONCAT(date_post, " ", time_post) > "' . $date_4 . '" AND CONCAT(date_post, " ", time_post) < "' . $date_0 . '"', 'id_report', 'DESC');
+    $res = $db->select('tb_report', 'id_category="' . $id_category . '" AND create_at > "' . $date_4 . '" AND create_at < "' . $date_0 . '"', 'id_report', 'DESC');
+
 
     $total = 100 - mysqli_num_rows($res);
-
-
-
 
     $chart = array(
         100 - $jam_1,
@@ -63,12 +62,12 @@ if (isset($obj['id_user']) && isset($obj['category'])) {
 
     // nama PIC
     $data_return_pic = array();
-    $pic = $db->select('tb_contractor_job', 'id_category="' . $id_category . '"', 'id_contractor', 'ASC');
+    $pic = $db->select('tb_employee_job', 'id_master_category="' . $id_master_category . '"', 'id_employee_job', 'ASC');
 
     while ($data_pic = mysqli_fetch_assoc($pic)) {
-        $pic_name = $db->select('tb_contractor', 'id_contractor="' . $data_pic['id_contractor'] . '"', 'id_contractor', 'DESC');
+        $pic_name = $db->select('tb_employee', 'id_employee="' . $data_pic['id_employee'] . '"', 'id_employee', 'DESC');
         $pic_name = mysqli_fetch_assoc($pic_name);
-        $pic_name = $pic_name['name_contractor'];
+        $pic_name = $pic_name['name'];
         $data_return_pic[] = $pic_name;
     }
 
@@ -95,11 +94,12 @@ if (isset($obj['id_user']) && isset($obj['category'])) {
     );
 
 
-    $data_dropdown = $db->select('tb_manager_contractor_job', 'id_manager_contractor = "' . $id_user . '" ', 'id_category', 'DESC');
+    $data_dropdown = $db->select('tb_category', 'id_master_category = "' . $id_master_category . '" ', 'id_category', 'ASC');
 
 
     if (mysqli_num_rows($data_dropdown) > 0) {
         while ($result_dropdown = mysqli_fetch_assoc($data_dropdown)) {
+
             $id_category = $result_dropdown['id_category'];
             $data_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
 
@@ -112,61 +112,62 @@ if (isset($obj['id_user']) && isset($obj['category'])) {
                 );
             }
         }
-    } else {
-        $data_dropdown = $db->select('tb_contractor_job', 'id_contractor = "' . $id_user . '" ', 'id_category', 'DESC');
-        if (mysqli_num_rows($data_dropdown) > 0) {
-            while ($result_dropdown = mysqli_fetch_assoc($data_dropdown)) {
-                $id_category = $result_dropdown['id_category'];
-                $data_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                $data_category = mysqli_fetch_assoc($data_category)['category'];
-
-                if ($data_category != $subtitle) {
-                    $data_balik[] = array(
-                        'title' => $title,
-                        'subtitle' => $data_category,
-                    );
-                }
-            }
-        } else {
-            $data_dropdown = $db->select('tb_estate_cordinator_job', 'id_estate_cordinator = "' . $id_user . '" ', 'id_master_category', 'DESC');
-            if (mysqli_num_rows($data_dropdown) > 0) {
-                $master_category = mysqli_fetch_assoc($data_dropdown)['id_master_category'];
-
-                $data_category = $db->select('tb_category', 'id_master_category = "' . $master_category . '"', 'id_category', 'ASC');
-
-                if (mysqli_num_rows($data_category) > 0) {
-                    while ($result_category = mysqli_fetch_assoc($data_category)) {
-                        $name_category = $result_category['category'];
-
-                        if ($name_category != $subtitle) {
-                            $data_balik[] = array(
-                                'title' => $title,
-                                'subtitle' => $name_category,
-                            );
-                        }
-                    }
-                } else {
-                }
-
-
-
-                // while ($result_dropdown = mysqli_fetch_assoc($data_dropdown)) {
-                //     $id_category = $result_dropdown['id_category'];
-                //     $data_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                //     $data_category = mysqli_fetch_assoc($data_category)['category'];
-
-                //     if ($data_category != $subtitle) {
-                //         $data_balik[] = array(
-                //             'title' => $title,
-                //             'subtitle' => $data_category,
-                //         );
-                //     }
-                // }
-            }
-        }
     }
+    // else {
+    //     $data_dropdown = $db->select('tb_contractor_job', 'id_contractor = "' . $id_user . '" ', 'id_category', 'DESC');
+    //     if (mysqli_num_rows($data_dropdown) > 0) {
+    //         while ($result_dropdown = mysqli_fetch_assoc($data_dropdown)) {
+    //             $id_category = $result_dropdown['id_category'];
+    //             $data_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+
+    //             $data_category = mysqli_fetch_assoc($data_category)['category'];
+
+    //             if ($data_category != $subtitle) {
+    //                 $data_balik[] = array(
+    //                     'title' => $title,
+    //                     'subtitle' => $data_category,
+    //                 );
+    //             }
+    //         }
+    //     } else {
+    //         $data_dropdown = $db->select('tb_estate_cordinator_job', 'id_estate_cordinator = "' . $id_user . '" ', 'id_master_category', 'DESC');
+    //         if (mysqli_num_rows($data_dropdown) > 0) {
+    //             $master_category = mysqli_fetch_assoc($data_dropdown)['id_master_category'];
+
+    //             $data_category = $db->select('tb_category', 'id_master_category = "' . $master_category . '"', 'id_category', 'ASC');
+
+    //             if (mysqli_num_rows($data_category) > 0) {
+    //                 while ($result_category = mysqli_fetch_assoc($data_category)) {
+    //                     $name_category = $result_category['category'];
+
+    //                     if ($name_category != $subtitle) {
+    //                         $data_balik[] = array(
+    //                             'title' => $title,
+    //                             'subtitle' => $name_category,
+    //                         );
+    //                     }
+    //                 }
+    //             } else {
+    //             }
+
+
+
+    //             // while ($result_dropdown = mysqli_fetch_assoc($data_dropdown)) {
+    //             //     $id_category = $result_dropdown['id_category'];
+    //             //     $data_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+
+    //             //     $data_category = mysqli_fetch_assoc($data_category)['category'];
+
+    //             //     if ($data_category != $subtitle) {
+    //             //         $data_balik[] = array(
+    //             //             'title' => $title,
+    //             //             'subtitle' => $data_category,
+    //             //         );
+    //             //     }
+    //             // }
+    //         }
+    //     }
+    // }
 
 
 

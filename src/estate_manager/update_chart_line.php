@@ -51,20 +51,21 @@ if (isset($obj['id_user']) && isset($obj['date']) && isset($obj['range_date']) &
 
     if (mysqli_num_rows($category) > 0) {
         $category = mysqli_fetch_assoc($category);
-        // select pekerja kontraktor
-        $contractor = $db->select('tb_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'DESC');
+        
+        // select pekerja
+        $contractor = $db->select('tb_employee_job', 'id_master_category = "' . $category['id_master_category'] . '"', 'id_employee_job', 'ASC');
 
         $result_category = array();
         $pic = array();
         $name_pic = array();
         if (mysqli_num_rows($contractor) > 0) {
             while ($data_contractor = mysqli_fetch_assoc($contractor)) {
-                $pic[] = $data_contractor['id_contractor'];
+                $pic[] = $data_contractor['id_employee'];
             }
             foreach ($pic as $value) {
-                $contractor = $db->select('tb_contractor', 'id_contractor="' . $value . '"', 'id_contractor', 'ASC');
+                $contractor = $db->select('tb_employee', 'id_employee="' . $value . '"', 'id_employee', 'ASC');
                 while ($dt_contractor = mysqli_fetch_assoc($contractor)) {
-                    $name_pic[] = $dt_contractor['name_contractor'];
+                    $name_pic[] = $dt_contractor['name'];
                 }
             }
             $result_category['pic'] = $name_pic;

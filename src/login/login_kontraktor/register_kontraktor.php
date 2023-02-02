@@ -68,6 +68,12 @@ if (isset($_POST['name_contractor']) && isset($_POST['username']) && isset($_POS
 
 					if ($update) {
 						$result_job = false;
+
+						// insert notification
+						$unique_id_notification = UUID::guidv4();
+						$result_notification =  $db->insert('tb_settings_notification', 'id_notification = "' . $unique_id_notification . '", id_user = "' . $unique_id . '"');
+
+
 						foreach ($contractor_job as $value) {
 							$data_category = $db->select('tb_category', 'category ="' . $value . '"', 'id_category', 'ASC');
 

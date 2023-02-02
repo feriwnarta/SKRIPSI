@@ -1,0 +1,4 @@
+[28-Jan-2023 23:31:02 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/report/add_report.php on line 122
+[28-Jan-2023 23:31:02 asia/jakarta] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/report/add_report.php on line 146
+[28-Jan-2023 23:31:02 asia/jakarta] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/report/add_report.php on line 150
+[28-Jan-2023 23:31:02 asia/jakarta] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/report/add_report.php on line 198

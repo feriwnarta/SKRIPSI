@@ -112,12 +112,39 @@ class FirebaseMessaging
     }
 }
 
+class UUID
+{
+    static function guidv4($data = null)
+    {
+        // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+        $data = $data ?? random_bytes(16);
+        assert(strlen($data) == 16);
+
+        // Set version to 0100
+        $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+        // Set bits 6-7 to 10
+        $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+        // Output the 36 character UUID.
+        return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+    }
+}
+
+class AddNotification
+{
+    static function saveNotif($id_user, $id_appropriate, $type, $content, $title)
+    {
+        $unique_id = UUID::guidv4();
+        $db = new db();
+        $time = date('Y-m-d H:i:s');
+
+        $rs = $db->insert('tb_notification', 'id_notification = "' . $unique_id . '", id_user = "' . $id_user . '", id_appropriate = "' . $id_appropriate . '", type = "' . $type . '", content = "' . $content . '", title = "' . $title . '", update_at = "' . $time . '"');
+        return $rs;
+    }
+}
+
 date_default_timezone_set('asia/jakarta');
-
 $db = new db();
-
-$this_time = new DateTime();
-$this_time->format('Y-m-d H:i:s');
 
 $data_report = $db->select('tb_report', 'id_report', 'id_report', 'DESC');
 
@@ -130,68 +157,83 @@ if (mysqli_num_rows($data_report) > 0) {
         $waktu = time_elapsed_string($create_at);
         $status = $result_report['status'];
 
-
+        echo $waktu;
 
 
         if ($status == 'Menunggu') {
-            if ($waktu == '1 jam') {
-                $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 1"', 'id_report = "' . $id_report . '"');
-                if ($query) {
+            
 
-                    $data_manager_contractor = $db->select('tb_manager_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+            if ($waktu == '1 menit') {
 
-                    while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                        $id_manager_contractor = $result_manager_contractor['id_manager_contractor'];
+                $check_exist_eskalasi = $db->select('tb_report', 'id_report = "' . $id_report . '" AND status_eskalasi = ""', 'id_report', 'DESC');
 
-                        $manager_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_manager_contractor . '"', 'id_manager_contractor', 'ASC');
+                
 
-                        $manager_contractor = mysqli_fetch_assoc($manager_contractor);
+                if (mysqli_num_rows($check_exist_eskalasi) > 0) {
+                    $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 1"', 'id_report = "' . $id_report . '"');
 
-                        $name_manager = $manager_contractor['name'];
-                        $id_manager_contractor = $manager_contractor['id_manager_contractor'];
 
-                        $status_process = 'Laporan dieskalasikan tingkat 1 ke manajer kontraktor (' . $name_manager . ')';
+                    if ($query) {
+                        // select master category
+                        $master_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+                        $master_category = mysqli_fetch_assoc($master_category);
+                        $id_master_category = $master_category['id_master_category'];
 
-                        $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+                        $data_manager_contractor = $db->select('tb_employee_job', 'id_master_category = "' . $id_master_category . '" AND type = "Manager Kontraktor"', 'id_master_category', 'ASC');
 
-                        if ($query_process) {
-                            $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+                        while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
+                            $id_manager_contractor = $result_manager_contractor['id_employee'];
 
-                            $user_token = mysqli_fetch_assoc($user_token);
+                            $manager_contractor = $db->select('tb_employee', 'id_employee = "' . $id_manager_contractor . '"', 'id_employee', 'ASC');
 
-                            $title = 'Eskalasi tingkat 1';
+                            $manager_contractor = mysqli_fetch_assoc($manager_contractor);
 
-                            $body = 'Segera hubungi kepala kontraktor terkait';
+                            $name_manager = $manager_contractor['name'];
+                            $id_manager_contractor = $manager_contractor['id_employee'];
 
-                            $user_token = $user_token['token'];
+                            $status_process = 'Laporan dieskalasikan tingkat 1 ke manajer kontraktor (' . $name_manager . ')';
 
-                            FirebaseMessaging::sendNotif($user_token, $title, $body);
+                            $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+
+                            if ($query_process) {
+                                $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+
+                                $title = 'Eskalasi tingkat 1';
+                                $body = 'Segera hubungi kepala kontraktor terkait';
+
+                                // kirim notif ke table notification
+                                $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 1', $title, $body);
+
+                                $user_token = mysqli_fetch_assoc($user_token);
+                                $user_token = $user_token['token'];
+
+                                FirebaseMessaging::sendNotif($user_token, $title, $body);
+                            }
                         }
                     }
                 }
-            } else if ($waktu == '2 jam') {
+            } else if ($waktu == '2 menit') {
+
                 if ($status_eskalasi == 'Eskalasi tingkat 1') {
                     $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 2"', 'id_report = "' . $id_report . '"');
                     if ($query) {
 
-                        $category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+                        // select master category
+                        $master_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+                        $master_category = mysqli_fetch_assoc($master_category);
+                        $id_master_category = $master_category['id_master_category'];
 
-                        $category = mysqli_fetch_assoc($category);
-
-                        $id_master = $category['id_master_category'];
-
-
-                        $data_manager_contractor = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $id_master . '"', 'id_master_category', 'ASC');
+                        $data_manager_contractor = $db->select('tb_employee_job', 'id_master_category = "' . $id_master_category . '" AND type="Supervisor / Estate Koordinator"', 'id_employee_job', 'ASC');
 
                         while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                            $id_manager_contractor = $result_manager_contractor['id_estate_cordinator'];
+                            $id_manager_contractor = $result_manager_contractor['id_employee'];
 
-                            $manager_contractor = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_manager_contractor . '"', 'id_estate_cordinator', 'ASC');
+                            $manager_contractor = $db->select('tb_employee', 'id_employee = "' . $id_manager_contractor . '"', 'id_employee', 'ASC');
 
                             $manager_contractor = mysqli_fetch_assoc($manager_contractor);
 
-                            $name_manager = $manager_contractor['name_estate_cordinator'];
-                            $id_manager_contractor = $manager_contractor['id_estate_cordinator'];
+                            $name_manager = $manager_contractor['name'];
+                            $id_manager_contractor = $manager_contractor['id_employee'];
 
                             $status_process = 'Laporan dieskalasikan tingkat 2 ke estate cordinator (' . $name_manager . ')';
 
@@ -208,12 +250,15 @@ if (mysqli_num_rows($data_report) > 0) {
 
                                 $user_token = $user_token['token'];
 
+                                // kirim notif ke table notification
+                                $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 2', $title, $body);
+
                                 FirebaseMessaging::sendNotif($user_token, $title, $body);
                             }
                         }
                     }
                 }
-            } else if ($waktu == '3 jam') {
+            } else if ($waktu == '3 menit') {
                 if ($status_eskalasi == 'Eskalasi tingkat 2') {
                     $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 3"', 'id_report = "' . $id_report . '"');
                     if ($query) {
@@ -240,341 +285,8 @@ if (mysqli_num_rows($data_report) > 0) {
 
                             $user_token = $user_token['token'];
 
-                            FirebaseMessaging::sendNotif($user_token, $title, $body);
-                        }
-                    }
-                }
-            }
-        } else if ($status = 'Diproses') {
-            if ($waktu == '1 jam') {
-                $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 1"', 'id_report = "' . $id_report . '"');
-                if ($query) {
-
-                    $data_manager_contractor = $db->select('tb_manager_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                    while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                        $id_manager_contractor = $result_manager_contractor['id_manager_contractor'];
-
-                        $manager_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_manager_contractor . '"', 'id_manager_contractor', 'ASC');
-
-                        $manager_contractor = mysqli_fetch_assoc($manager_contractor);
-
-                        $name_manager = $manager_contractor['name'];
-                        $id_manager_contractor = $manager_contractor['id_manager_contractor'];
-
-                        $status_process = 'Laporan dieskalasikan tingkat 1 ke manajer kontraktor (' . $name_manager . ')';
-
-                        $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                        if ($query_process) {
-                            $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                            $user_token = mysqli_fetch_assoc($user_token);
-
-                            $title = 'Eskalasi tingkat 1';
-
-                            $body = 'Segera hubungi kepala kontraktor terkait';
-
-                            $user_token = $user_token['token'];
-
-                            FirebaseMessaging::sendNotif($user_token, $title, $body);
-                        }
-                    }
-                }
-            } else if ($waktu == '2 jam') {
-                if ($status_eskalasi == 'Eskalasi tingkat 1') {
-                    $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 2"', 'id_report = "' . $id_report . '"');
-                    if ($query) {
-
-                        $category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                        $category = mysqli_fetch_assoc($category);
-
-                        $id_master = $category['id_master_category'];
-
-
-                        $data_manager_contractor = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $id_master . '"', 'id_master_category', 'ASC');
-
-                        while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                            $id_manager_contractor = $result_manager_contractor['id_estate_cordinator'];
-
-                            $manager_contractor = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_manager_contractor . '"', 'id_estate_cordinator', 'ASC');
-
-                            $manager_contractor = mysqli_fetch_assoc($manager_contractor);
-
-                            $name_manager = $manager_contractor['name_estate_cordinator'];
-                            $id_manager_contractor = $manager_contractor['id_estate_cordinator'];
-
-                            $status_process = 'Laporan dieskalasikan tingkat 2 ke estate cordinator (' . $name_manager . ')';
-
-                            $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                            if ($query_process) {
-                                $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                                $user_token = mysqli_fetch_assoc($user_token);
-
-                                $title = 'Eskalasi tingkat 2';
-
-                                $body = 'Segera hubungi manajer kontraktor terkait';
-
-                                $user_token = $user_token['token'];
-
-                                FirebaseMessaging::sendNotif($user_token, $title, $body);
-                            }
-                        }
-                    }
-                }
-            } else if ($waktu == '3 jam') {
-                if ($status_eskalasi == 'Eskalasi tingkat 2') {
-                    $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 3"', 'id_report = "' . $id_report . '"');
-                    if ($query) {
-
-                        $estate_manager = $db->select('tb_estate_manager', 'id_estate_manager NOT IN ("") ', 'id_estate_manager', 'ASC');
-                        $estate_manager = mysqli_fetch_assoc($estate_manager);
-
-
-                        $id_manager_contractor = $estate_manager['id_estate_manager'];
-                        $name_manager = $estate_manager['name_estate_manager'];
-
-                        $status_process = 'Laporan dieskalasikan tingkat 3 ke estate manager (' . $name_manager . ')';
-
-                        $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                        if ($query_process) {
-                            $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                            $user_token = mysqli_fetch_assoc($user_token);
-
-                            $title = 'Eskalasi tingkat 3';
-
-                            $body = 'Segera hubungi estate cordinator terkait';
-
-                            $user_token = $user_token['token'];
-
-                            FirebaseMessaging::sendNotif($user_token, $title, $body);
-                        }
-                    }
-                }
-            }
-        } else if ($status == 'Diproses') {
-            if ($waktu == '1 jam') {
-                $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 1"', 'id_report = "' . $id_report . '"');
-                if ($query) {
-
-                    $data_manager_contractor = $db->select('tb_manager_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                    while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                        $id_manager_contractor = $result_manager_contractor['id_manager_contractor'];
-
-                        $manager_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_manager_contractor . '"', 'id_manager_contractor', 'ASC');
-
-                        $manager_contractor = mysqli_fetch_assoc($manager_contractor);
-
-                        $name_manager = $manager_contractor['name'];
-                        $id_manager_contractor = $manager_contractor['id_manager_contractor'];
-
-                        $status_process = 'Laporan dieskalasikan tingkat 1 ke manajer kontraktor (' . $name_manager . ')';
-
-                        $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                        if ($query_process) {
-                            $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                            $user_token = mysqli_fetch_assoc($user_token);
-
-                            $title = 'Eskalasi tingkat 1';
-
-                            $body = 'Segera hubungi kepala kontraktor terkait';
-
-                            $user_token = $user_token['token'];
-
-                            FirebaseMessaging::sendNotif($user_token, $title, $body);
-                        }
-                    }
-                }
-            } else if ($waktu == '2 jam') {
-                if ($status_eskalasi == 'Eskalasi tingkat 1') {
-                    $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 2"', 'id_report = "' . $id_report . '"');
-                    if ($query) {
-
-                        $category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                        $category = mysqli_fetch_assoc($category);
-
-                        $id_master = $category['id_master_category'];
-
-
-                        $data_manager_contractor = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $id_master . '"', 'id_master_category', 'ASC');
-
-                        while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                            $id_manager_contractor = $result_manager_contractor['id_estate_cordinator'];
-
-                            $manager_contractor = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_manager_contractor . '"', 'id_estate_cordinator', 'ASC');
-
-                            $manager_contractor = mysqli_fetch_assoc($manager_contractor);
-
-                            $name_manager = $manager_contractor['name_estate_cordinator'];
-                            $id_manager_contractor = $manager_contractor['id_estate_cordinator'];
-
-                            $status_process = 'Laporan dieskalasikan tingkat 2 ke estate cordinator (' . $name_manager . ')';
-
-                            $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                            if ($query_process) {
-                                $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                                $user_token = mysqli_fetch_assoc($user_token);
-
-                                $title = 'Eskalasi tingkat 2';
-
-                                $body = 'Segera hubungi manajer kontraktor terkait';
-
-                                $user_token = $user_token['token'];
-
-                                FirebaseMessaging::sendNotif($user_token, $title, $body);
-                            }
-                        }
-                    }
-                }
-            } else if ($waktu == '3 jam') {
-                if ($status_eskalasi == 'Eskalasi tingkat 2') {
-                    $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 3"', 'id_report = "' . $id_report . '"');
-                    if ($query) {
-
-                        $estate_manager = $db->select('tb_estate_manager', 'id_estate_manager NOT IN ("") ', 'id_estate_manager', 'ASC');
-                        $estate_manager = mysqli_fetch_assoc($estate_manager);
-
-
-                        $id_manager_contractor = $estate_manager['id_estate_manager'];
-                        $name_manager = $estate_manager['name_estate_manager'];
-
-                        $status_process = 'Laporan dieskalasikan tingkat 3 ke estate manager (' . $name_manager . ')';
-
-                        $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                        if ($query_process) {
-                            $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                            $user_token = mysqli_fetch_assoc($user_token);
-
-                            $title = 'Eskalasi tingkat 3';
-
-                            $body = 'Segera hubungi estate cordinator terkait';
-
-                            $user_token = $user_token['token'];
-
-                            FirebaseMessaging::sendNotif($user_token, $title, $body);
-                        }
-                    }
-                }
-            }
-        } else if ($status == 'Diterima') {
-            if ($waktu == '1 jam') {
-                $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 1"', 'id_report = "' . $id_report . '"');
-                if ($query) {
-
-                    $data_manager_contractor = $db->select('tb_manager_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                    while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                        $id_manager_contractor = $result_manager_contractor['id_manager_contractor'];
-
-                        $manager_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_manager_contractor . '"', 'id_manager_contractor', 'ASC');
-
-                        $manager_contractor = mysqli_fetch_assoc($manager_contractor);
-
-                        $name_manager = $manager_contractor['name'];
-                        $id_manager_contractor = $manager_contractor['id_manager_contractor'];
-
-                        $status_process = 'Laporan dieskalasikan tingkat 1 ke manajer kontraktor (' . $name_manager . ')';
-
-                        $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                        if ($query_process) {
-                            $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                            $user_token = mysqli_fetch_assoc($user_token);
-
-                            $title = 'Eskalasi tingkat 1';
-
-                            $body = 'Segera hubungi kepala kontraktor terkait';
-
-                            $user_token = $user_token['token'];
-
-                            FirebaseMessaging::sendNotif($user_token, $title, $body);
-                        }
-                    }
-                }
-            } else if ($waktu == '2 jam') {
-                if ($status_eskalasi == 'Eskalasi tingkat 1') {
-                    $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 2"', 'id_report = "' . $id_report . '"');
-                    if ($query) {
-
-                        $category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
-
-                        $category = mysqli_fetch_assoc($category);
-
-                        $id_master = $category['id_master_category'];
-
-
-                        $data_manager_contractor = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $id_master . '"', 'id_master_category', 'ASC');
-
-                        while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
-                            $id_manager_contractor = $result_manager_contractor['id_estate_cordinator'];
-
-                            $manager_contractor = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_manager_contractor . '"', 'id_estate_cordinator', 'ASC');
-
-                            $manager_contractor = mysqli_fetch_assoc($manager_contractor);
-
-                            $name_manager = $manager_contractor['name_estate_cordinator'];
-                            $id_manager_contractor = $manager_contractor['id_estate_cordinator'];
-
-                            $status_process = 'Laporan dieskalasikan tingkat 2 ke estate cordinator (' . $name_manager . ')';
-
-                            $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                            if ($query_process) {
-                                $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                                $user_token = mysqli_fetch_assoc($user_token);
-
-                                $title = 'Eskalasi tingkat 2';
-
-                                $body = 'Segera hubungi manajer kontraktor terkait';
-
-                                $user_token = $user_token['token'];
-
-                                FirebaseMessaging::sendNotif($user_token, $title, $body);
-                            }
-                        }
-                    }
-                }
-            } else if ($waktu == '3 jam') {
-                if ($status_eskalasi == 'Eskalasi tingkat 2') {
-                    $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 3"', 'id_report = "' . $id_report . '"');
-                    if ($query) {
-
-                        $estate_manager = $db->select('tb_estate_manager', 'id_estate_manager NOT IN ("") ', 'id_estate_manager', 'ASC');
-                        $estate_manager = mysqli_fetch_assoc($estate_manager);
-
-
-                        $id_manager_contractor = $estate_manager['id_estate_manager'];
-                        $name_manager = $estate_manager['name_estate_manager'];
-
-                        $status_process = 'Laporan dieskalasikan tingkat 3 ke estate manager (' . $name_manager . ')';
-
-                        $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
-
-                        if ($query_process) {
-                            $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
-
-                            $user_token = mysqli_fetch_assoc($user_token);
-
-                            $title = 'Eskalasi tingkat 3';
-
-                            $body = 'Segera hubungi estate cordinator terkait';
-
-                            $user_token = $user_token['token'];
+                            // kirim notif ke table notification
+                            $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 3', $title, $body);
 
                             FirebaseMessaging::sendNotif($user_token, $title, $body);
                         }
@@ -582,6 +294,271 @@ if (mysqli_num_rows($data_report) > 0) {
                 }
             }
         }
+        // else if ($status == 'Diproses') {
+
+        //     $waktu = $db->select('tb_process_report', 'id_report = "' . $id_report . '" AND status_process REGEXP "Laporan Diproses"', 'id_process_report', 'DESC');
+        //     $waktu = mysqli_fetch_assoc($waktu);
+
+        //     $waktu = time_elapsed_string($waktu['current_time_process']);
+
+        //     if ($waktu == '1 jam') {
+
+        //         $check_exist_eskalasi = $db->select('tb_report', 'id_report = "' . $id_report . '" AND status_eskalasi = ""', 'id_report', 'DESC');
+
+        //         if (mysqli_num_rows($check_exist_eskalasi) > 0) {
+        //             $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 1"', 'id_report = "' . $id_report . '"');
+        //             if ($query) {
+
+        //                 $data_manager_contractor = $db->select('tb_manager_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+
+        //                 while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
+        //                     $id_manager_contractor = $result_manager_contractor['id_manager_contractor'];
+
+        //                     $manager_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_manager_contractor . '"', 'id_manager_contractor', 'ASC');
+
+        //                     $manager_contractor = mysqli_fetch_assoc($manager_contractor);
+
+        //                     $name_manager = $manager_contractor['name'];
+        //                     $id_manager_contractor = $manager_contractor['id_manager_contractor'];
+
+        //                     $status_process = 'Laporan dieskalasikan tingkat 1 ke manajer kontraktor (' . $name_manager . ')';
+
+        //                     $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+
+        //                     if ($query_process) {
+        //                         $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+
+        //                         $user_token = mysqli_fetch_assoc($user_token);
+
+        //                         $title = 'Eskalasi tingkat 1';
+
+        //                         $body = 'Segera hubungi kepala kontraktor terkait';
+
+        //                         $user_token = $user_token['token'];
+
+        //                         // kirim notif ke table notification
+        //                         $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 1', $title, $body);
+
+        //                         FirebaseMessaging::sendNotif($user_token, $title, $body);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     } else if ($waktu == '2 jam') {
+        //         if ($status_eskalasi == 'Eskalasi tingkat 1') {
+        //             $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 2"', 'id_report = "' . $id_report . '"');
+        //             if ($query) {
+
+        //                 $category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+
+        //                 $category = mysqli_fetch_assoc($category);
+
+        //                 $id_master = $category['id_master_category'];
+
+
+        //                 $data_manager_contractor = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $id_master . '"', 'id_master_category', 'ASC');
+
+        //                 while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
+        //                     $id_manager_contractor = $result_manager_contractor['id_estate_cordinator'];
+
+        //                     $manager_contractor = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_manager_contractor . '"', 'id_estate_cordinator', 'ASC');
+
+        //                     $manager_contractor = mysqli_fetch_assoc($manager_contractor);
+
+        //                     $name_manager = $manager_contractor['name_estate_cordinator'];
+        //                     $id_manager_contractor = $manager_contractor['id_estate_cordinator'];
+
+        //                     $status_process = 'Laporan dieskalasikan tingkat 2 ke estate cordinator (' . $name_manager . ')';
+
+        //                     $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+
+        //                     if ($query_process) {
+        //                         $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+
+        //                         $user_token = mysqli_fetch_assoc($user_token);
+
+        //                         $title = 'Eskalasi tingkat 2';
+
+        //                         $body = 'Segera hubungi manajer kontraktor terkait';
+
+        //                         $user_token = $user_token['token'];
+
+        //                         // kirim notif ke table notification
+        //                         $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 2', $title, $body);
+
+        //                         FirebaseMessaging::sendNotif($user_token, $title, $body);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     } else if ($waktu == '3 jam') {
+        //         if ($status_eskalasi == 'Eskalasi tingkat 2') {
+        //             $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 3"', 'id_report = "' . $id_report . '"');
+        //             if ($query) {
+
+        //                 $estate_manager = $db->select('tb_estate_manager', 'id_estate_manager NOT IN ("") ', 'id_estate_manager', 'ASC');
+        //                 $estate_manager = mysqli_fetch_assoc($estate_manager);
+
+
+        //                 $id_manager_contractor = $estate_manager['id_estate_manager'];
+        //                 $name_manager = $estate_manager['name_estate_manager'];
+
+        //                 $status_process = 'Laporan dieskalasikan tingkat 3 ke estate manager (' . $name_manager . ')';
+
+        //                 $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+
+        //                 if ($query_process) {
+        //                     $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+
+        //                     $user_token = mysqli_fetch_assoc($user_token);
+
+        //                     $title = 'Eskalasi tingkat 3';
+
+        //                     $body = 'Segera hubungi estate cordinator terkait';
+
+        //                     $user_token = $user_token['token'];
+
+        //                     // kirim notif ke table notification
+        //                     $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 3', $title, $body);
+
+        //                     FirebaseMessaging::sendNotif($user_token, $title, $body);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // } else if ($status == 'Diterima') {
+
+        //     $waktu = $db->select('tb_process_report', 'id_report = "' . $id_report . '" AND status_process REGEXP "Laporan Diterima"', 'id_process_report', 'DESC');
+        //     $waktu = mysqli_fetch_assoc($waktu);
+
+        //     $waktu = time_elapsed_string($waktu['current_time_process']);
+
+        //     if ($waktu == '1 jam') {
+
+        //         $check_exist_eskalasi = $db->select('tb_report', 'id_report = "' . $id_report . '" AND status_eskalasi = ""', 'id_report', 'DESC');
+
+        //         if (mysqli_num_rows($check_exist_eskalasi) > 0) {
+        //             $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 1"', 'id_report = "' . $id_report . '"');
+        //             if ($query) {
+
+        //                 $data_manager_contractor = $db->select('tb_manager_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+
+        //                 while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
+        //                     $id_manager_contractor = $result_manager_contractor['id_manager_contractor'];
+
+        //                     $manager_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_manager_contractor . '"', 'id_manager_contractor', 'ASC');
+
+        //                     $manager_contractor = mysqli_fetch_assoc($manager_contractor);
+
+        //                     $name_manager = $manager_contractor['name'];
+        //                     $id_manager_contractor = $manager_contractor['id_manager_contractor'];
+
+        //                     $status_process = 'Laporan dieskalasikan tingkat 1 ke manajer kontraktor (' . $name_manager . ')';
+
+        //                     $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+
+        //                     if ($query_process) {
+        //                         $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+
+        //                         $user_token = mysqli_fetch_assoc($user_token);
+
+        //                         $title = 'Eskalasi tingkat 1';
+
+        //                         $body = 'Segera hubungi kepala kontraktor terkait';
+
+        //                         $user_token = $user_token['token'];
+
+        //                         // kirim notif ke table notification
+        //                         $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 1', $title, $body);
+
+        //                         FirebaseMessaging::sendNotif($user_token, $title, $body);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     } else if ($waktu == '2 jam') {
+        //         if ($status_eskalasi == 'Eskalasi tingkat 1') {
+        //             $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 2"', 'id_report = "' . $id_report . '"');
+        //             if ($query) {
+
+        //                 $category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+
+        //                 $category = mysqli_fetch_assoc($category);
+
+        //                 $id_master = $category['id_master_category'];
+
+
+        //                 $data_manager_contractor = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $id_master . '"', 'id_master_category', 'ASC');
+
+        //                 while ($result_manager_contractor = mysqli_fetch_assoc($data_manager_contractor)) {
+        //                     $id_manager_contractor = $result_manager_contractor['id_estate_cordinator'];
+
+        //                     $manager_contractor = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_manager_contractor . '"', 'id_estate_cordinator', 'ASC');
+
+        //                     $manager_contractor = mysqli_fetch_assoc($manager_contractor);
+
+        //                     $name_manager = $manager_contractor['name_estate_cordinator'];
+        //                     $id_manager_contractor = $manager_contractor['id_estate_cordinator'];
+
+        //                     $status_process = 'Laporan dieskalasikan tingkat 2 ke estate cordinator (' . $name_manager . ')';
+
+        //                     $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+
+        //                     if ($query_process) {
+        //                         $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+
+        //                         $user_token = mysqli_fetch_assoc($user_token);
+
+        //                         $title = 'Eskalasi tingkat 2';
+
+        //                         $body = 'Segera hubungi manajer kontraktor terkait';
+
+        //                         $user_token = $user_token['token'];
+
+        //                         // kirim notif ke table notification
+        //                         $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 2', $title, $body);
+
+        //                         FirebaseMessaging::sendNotif($user_token, $title, $body);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     } else if ($waktu == '3 jam') {
+        //         if ($status_eskalasi == 'Eskalasi tingkat 2') {
+        //             $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 3"', 'id_report = "' . $id_report . '"');
+        //             if ($query) {
+
+        //                 $estate_manager = $db->select('tb_estate_manager', 'id_estate_manager NOT IN ("") ', 'id_estate_manager', 'ASC');
+        //                 $estate_manager = mysqli_fetch_assoc($estate_manager);
+
+
+        //                 $id_manager_contractor = $estate_manager['id_estate_manager'];
+        //                 $name_manager = $estate_manager['name_estate_manager'];
+
+        //                 $status_process = 'Laporan dieskalasikan tingkat 3 ke estate manager (' . $name_manager . ')';
+
+        //                 $query_process = $db->insert('tb_process_report', 'id_report = "' . $id_report . '", status_process = "' . $status_process . '"');
+
+        //                 if ($query_process) {
+        //                     $user_token = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager_contractor . '"', 'id_fcm', 'ASC');
+
+        //                     $user_token = mysqli_fetch_assoc($user_token);
+
+        //                     $title = 'Eskalasi tingkat 3';
+
+        //                     $body = 'Segera hubungi estate cordinator terkait';
+
+        //                     $user_token = $user_token['token'];
+
+        //                     // kirim notif ke table notification
+        //                     $result_add_notif = AddNotification::saveNotif($id_manager_contractor, $id_manager_contractor, 'ESKALASI TINGKAT 3', $title, $body);
+
+        //                     FirebaseMessaging::sendNotif($user_token, $title, $body);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     }
 }
 

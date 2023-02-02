@@ -7,14 +7,14 @@ date_default_timezone_set('asia/jakarta');
 
 if (isset($obj['id_cordinator'])) {
 
-	
+
 
 	if (!empty($obj['id_cordinator'])) {
 		$start = mysqli_real_escape_string($db->query, ($obj['start']));
 		$limit = mysqli_real_escape_string($db->query, ($obj['limit']));
 		$id_cordinator = mysqli_real_escape_string($db->query, ($obj['id_cordinator']));
 		// select data cordinator job
-		$job_cordinator = $db->select('tb_estate_cordinator_job', 'id_estate_cordinator="' . $id_cordinator . '"', 'id_estate_cordinator', 'DESC');
+		$job_cordinator = $db->select('tb_employee_job', 'id_employee="' . $id_cordinator . '"', 'id_employee', 'DESC');
 
 
 		$id_cordinator_2 = mysqli_fetch_assoc($job_cordinator);

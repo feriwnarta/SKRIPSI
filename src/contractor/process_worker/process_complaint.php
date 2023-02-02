@@ -13,12 +13,12 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
     $id_contractor = mysqli_real_escape_string($db->query, ($_POST['id_worker']));
     $message = 'Laporan diproses';
 
-    $contractor_exist = $db->select('tb_contractor', 'id_contractor = "' . $id_contractor . '"', 'id_contractor', 'ASC');
+    $contractor_exist = $db->select('tb_employee', 'id_employee = "' . $id_contractor . '"', 'id_employee', 'ASC');
 
     if (mysqli_num_rows($contractor_exist) > 0) {
 
         $contractor_exist = mysqli_fetch_assoc($contractor_exist);
-        $message = 'Laporan diproses oleh kepala kontraktor (' . $contractor_exist['name_contractor'] . ')';
+        $message = 'Laporan diproses oleh mandor / kepala kontraktor (' . $contractor_exist['name'] . ')';
     }
 
 
@@ -91,6 +91,9 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker'])) {
         // ambil id user berdasarkan id report
         $id_user = $db->select('tb_report', 'id_report="' . $id_report . '"', 'id_report', 'DESC');
         $data_user = mysqli_fetch_assoc($id_user);
+
+        
+
         $category = $data_user['category'];
         $body = 'Laporan anda "' . $data_user['category'] . '" sedang dikerjakan';
         $id_user = $data_user['id_user'];

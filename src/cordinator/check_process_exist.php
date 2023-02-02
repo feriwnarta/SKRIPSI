@@ -15,8 +15,12 @@ if (!empty($obj['id_report']) && !empty($obj['id_estate_cordinator'])) {
 
 	if (mysqli_num_rows($result) > 0) {
 
-		$data_proses = $db->select('tb_process_report', 'id_report = "' . $id_report . '"', 'id_report', 'DESC');
-		if (mysqli_num_rows($data_proses) > 1) {
+		// $data_proses = $db->select('tb_process_report', 'id_report = "' . $id_report . '"', 'id_report', 'DESC');
+
+		$data_proses = $db->select('tb_report', 'id_report = "' . $id_report . '" AND status = "Diproses"',' id_report', 'DESC');
+
+
+		if (mysqli_num_rows($data_proses) > 0) {
 			echo json_encode(
 				array(
 					'status' => 'BEEN PROCESSED',

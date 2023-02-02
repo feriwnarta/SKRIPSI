@@ -62,6 +62,12 @@ if (!empty($_POST['name_estate_cordinator']) && !empty($_POST['username']) && !e
 						$data_auth = mysqli_fetch_assoc($data_auth);
 						$update = $db->update('tb_user', 'id_auth = "' . $data_auth['id_auth'] . '"', 'id_user = "' . $unique_id . '"');
 
+
+						// insert notification
+						$unique_id_notification = UUID::guidv4();
+						$result_notification =  $db->insert('tb_settings_notification', 'id_notification = "' . $unique_id_notification . '", id_user = "' . $unique_id . '"');
+
+
 						if ($result && $update) {
 							$unique_id_cordinator = UUID::guidv4();
 							$result_job = $db->insert('tb_estate_cordinator_job', 'id_estate_cordinator_job = "' . $unique_id_cordinator . '", id_estate_cordinator="' . $unique_id . '",id_master_category="' . $cordinator_job . '"');

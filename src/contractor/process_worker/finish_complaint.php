@@ -14,12 +14,12 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker']) && !empty($_POST[
     $duration = mysqli_real_escape_string($db->query, $_POST['duration']);
     $message = 'Laporan Selesai';
 
-    $contractor_exist = $db->select('tb_contractor', 'id_contractor = "' . $id_worker . '"', 'id_contractor', 'ASC');
+    $contractor_exist = $db->select('tb_employee', 'id_employee = "' . $id_worker . '"', 'id_employee', 'ASC');
 
     if (mysqli_num_rows($contractor_exist) > 0) {
 
         $contractor_exist = mysqli_fetch_assoc($contractor_exist);
-        $message = 'Laporan selesai dikerjakan oleh kepala kontraktor (' . $contractor_exist['name_contractor'] . ')';
+        $message = 'Laporan selesai dikerjakan oleh mandor / kepala kontraktor (' . $contractor_exist['name'] . ')';
     }
 
     // foto
@@ -80,7 +80,7 @@ if (!empty($_POST['id_report']) && !empty($_POST['id_worker']) && !empty($_POST[
 
 
     $content_notif = 'Laporanmu ' . $category . 'telah selesai dikerjakan';
-    $title_notif = 'Cordinator menanggapi laporan';
+    $title_notif = 'Mandor / kepala kontraktor menanggapi laporan';
 
     $result_save_notif = AddNotification::saveNotif($id_user, $id_worker, 'REPORT COMPLETE', $content_notif, $title_notif);
 

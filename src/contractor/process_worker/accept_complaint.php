@@ -13,14 +13,14 @@ if (!empty($obj['id_worker']) && !empty($obj['id_report'])) {
     $id_contractor = mysqli_real_escape_string($db->query, $obj['id_worker']);
     $id_report = mysqli_real_escape_string($db->query, $obj['id_report']);
 
-    $contractor_exist = $db->select('tb_contractor', 'id_contractor = "' . $id_contractor . '"', 'id_contractor', 'ASC');
+    $contractor_exist = $db->select('tb_employee', 'id_employee = "' . $id_contractor . '"', 'id_employee', 'ASC');
 
     $message = 'Laporan diterima';
 
     if (mysqli_num_rows($contractor_exist) > 0) {
 
         $contractor_exist = mysqli_fetch_assoc($contractor_exist);
-        $message = 'Laporan Diterima oleh kepala kontraktor (' . $contractor_exist['name_contractor'] . ')';
+        $message = 'Laporan diterima oleh mandor / kepala kontraktor (' . $contractor_exist['name'] . ')';
     }
 
     $result = $db->insert('tb_process_report', 'id_report="' . $id_report . '", id_worker="' . $id_contractor . '",status_process="' . $message . '"');
@@ -37,18 +37,12 @@ if (!empty($obj['id_worker']) && !empty($obj['id_report'])) {
             $category = $id_user['category'];
             $id_user = $id_user['id_user'];
 
-
-            // hapus eskalasi
-
-
-
-
             // kirim notif keuser bahwa laporan diterima
             $toket = $db->select('tb_user_fcm_token', 'id_user="' . $id_user . '"', 'id_fcm', 'DESC');
             $toket = mysqli_fetch_assoc($toket)['token'];
             $title = 'Laporan diterima';
 
-            $title_notif = 'Cordinator menanggapi laporanmu';
+            $title_notif = 'Mandor / kepala kontraktor menanggapi laporanmu';
             $contet_notif = 'Laporan mu tentang ' . $category . ' telah diterima dan akan segera diproses';
 
             $result_add_notif = AddNotification::saveNotif($id_user, $id_contractor, 'REPORT ACCEPT', $contet_notif, $title_notif);

@@ -25,13 +25,19 @@ if (isset($obj['id_user']) && isset($obj['status']) && isset($obj['start']) && i
             while ($result_category = mysqli_fetch_assoc($data_category)) {
                 $id_master_category = $result_category['id_master_category'];
 
-                $cordinator_job = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $id_master_category . '"', 'id_master_category', 'ASC');
+                // jika pekerjaan keamana
+                if ($result_category['id_category'] == 9) {
+                    $cordinator_job = $db->select('tb_employee_job', 'id_master_category = "' . $id_master_category . '" AND type = "Danru"', 'id_employee_job', 'ASC');
+                } else {
+                    $cordinator_job = $db->select('tb_employee_job', 'id_master_category = "' . $id_master_category . '"', 'id_employee_job', 'ASC');
+                }
+
 
                 while ($result_cordinator_job = mysqli_fetch_assoc($cordinator_job)) {
-                    $id_estate_cordinator = $result_cordinator_job['id_estate_cordinator'];
-                    $data_estate_cordinator = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_estate_cordinator . '"', 'id_estate_cordinator', 'ASC');
+                    $id_estate_cordinator = $result_cordinator_job['id_employee'];
+                    $data_estate_cordinator = $db->select('tb_employee', 'id_employee = "' . $id_estate_cordinator . '"', 'id_employee', 'ASC');
                     $data_estate_cordinator = mysqli_fetch_assoc($data_estate_cordinator);
-                    $data_report_return[$index]['cordinator'][] = $data_estate_cordinator;
+                    $data_report_return[$index]['pic'][] = $data_estate_cordinator;
                 }
             }
 
