@@ -136,7 +136,7 @@ if (!empty($obj['id_contractor'])) {
                                 }
 
                                 //pic
-                                $pic = $db->select('tb_employee_job', 'id_master_category = "' . $result['id_master_category'] . '"', 'id_employee_job', 'ASC');
+                                $pic = $db->select('tb_employee_job', 'id_master_category = "' . $result['id_master_category'] . '" and type = "Mandor / Kepala Kontraktor"', 'id_employee_job', 'ASC');
 
                                 $data_balik_pic = array();
 
@@ -197,7 +197,7 @@ if (!empty($obj['id_contractor'])) {
                 }
             }
         }
-    } else if ($status == 'MANDOR / KEPALA KONTRAKTOR') {
+    } else if ($status == 'SUPERVISOR / ESTATE KOORDINATOR') {
         $job_contractor = $db->select('tb_employee_job', 'id_employee="' . $id_contractor . '"', 'id_employee_job', 'ASC');
 
 
@@ -238,13 +238,13 @@ if (!empty($obj['id_contractor'])) {
 
 
                         //pic
-                        $pic = $db->select('tb_manager_contractor_job', 'id_category = "' . $dt['id_category'] . '"', 'id_category', 'ASC');
+                        $pic = $db->select('tb_employee_job', 'id_master_category = "' . $master_category . '" AND type = "Manager Kontraktor"', 'id_employee_job', 'ASC');
 
                         $data_balik_pic = array();
 
                         while ($data_pic = mysqli_fetch_assoc($pic)) {
-                            $id_pic = $data_pic['id_manager_contractor'];
-                            $data_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_pic . '"', 'id_contractor', 'ASC');
+                            $id_pic = $data_pic['id_employee'];
+                            $data_contractor = $db->select('tb_employee', 'id_employee = "' . $id_pic . '"', 'id_employee', 'ASC');
                             $data_contractor = mysqli_fetch_assoc($data_contractor);
                             $data_balik_pic[] = array(
                                 'name_pic' => $data_contractor['name'],

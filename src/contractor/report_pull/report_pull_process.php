@@ -103,7 +103,7 @@ if (!empty($obj['id_contractor'])) {
                 }
             }
         }
-    } else if ($status == 'MANAGER KONTRAKTOR') {
+    } else if ($status == 'SUPERVISOR / ESTATE KOORDINATOR') {
 
         $job_contractor = $db->select('tb_employee_job', 'id_employee="' . $id_contractor . '"', 'id_employee_job', 'ASC');
 
@@ -141,7 +141,7 @@ if (!empty($obj['id_contractor'])) {
                                 }
 
                                 //pic
-                                $pic = $db->select('tb_employee_job', 'id_master_category = "' . $result['id_master_category'] . '"', 'id_employee_job', 'ASC');
+                                $pic = $db->select('tb_employee_job', 'id_master_category = "' . $result['id_master_category'] . '" AND type = "Manager Kontraktor"', 'id_employee_job', 'ASC');
 
                                 $data_balik_pic = array();
 
@@ -177,7 +177,7 @@ if (!empty($obj['id_contractor'])) {
                                         'process_time' => $process['current_time_process'],
                                         'status' => $dt['status'],
                                         'address' => $dt['address'],
-                                        'kepala_contractor' => $data_balik_pic,
+                                        'manager_contractor' => $data_balik_pic,
                                         'category_detail' => $data_result
                                     );
                                 } else {
@@ -197,7 +197,7 @@ if (!empty($obj['id_contractor'])) {
                                         'status' => $dt['status_eskalasi'],
                                         'process_time' => $process['current_time_process'],
                                         'address' => $dt['address'],
-                                        'kepala_contractor' => $data_balik_pic,
+                                        'manager_contractor' => $data_balik_pic,
                                         'category_detail' => $data_result
                                     );
                                 }
@@ -207,7 +207,7 @@ if (!empty($obj['id_contractor'])) {
                 }
             }
         }
-    } else if ($status == 'MANDOR / KEPALA KONTRAKTOR') {
+    } else if ($status == 'MANAGER KONTRAKTOR') {
         $job_contractor = $db->select('tb_employee_job', 'id_employee="' . $id_contractor . '"', 'id_employee_job', 'ASC');
 
 
@@ -247,17 +247,17 @@ if (!empty($obj['id_contractor'])) {
                         $datetime = $dt['date_post'] . ' ' .  $dt['time_post'];
 
                         $process = $db->select('tb_process_report', 'id_report = "' . $dt['id_report'] . '" AND status_process REGEXP "Laporan diproses"', 'id_process_report', 'DESC');
-                                $process = mysqli_fetch_assoc($process);
+                        $process = mysqli_fetch_assoc($process);
 
 
                         //pic
-                        $pic = $db->select('tb_manager_contractor_job', 'id_category = "' . $dt['id_category'] . '"', 'id_category', 'ASC');
+                        $pic = $db->select('tb_employee_job', 'id_master_category = "' . $master_category . '" AND type = "Mandor / Kepala Kontraktor"', 'id_employee_job', 'ASC');
 
                         $data_balik_pic = array();
 
                         while ($data_pic = mysqli_fetch_assoc($pic)) {
-                            $id_pic = $data_pic['id_manager_contractor'];
-                            $data_contractor = $db->select('tb_manager_contractor', 'id_manager_contractor = "' . $id_pic . '"', 'id_contractor', 'ASC');
+                            $id_pic = $data_pic['id_employee'];
+                            $data_contractor = $db->select('tb_employee', 'id_employee = "' . $id_pic . '"', 'id_employee', 'ASC');
                             $data_contractor = mysqli_fetch_assoc($data_contractor);
                             $data_balik_pic[] = array(
                                 'name_pic' => $data_contractor['name'],
@@ -283,7 +283,7 @@ if (!empty($obj['id_contractor'])) {
                                 'process_time' => $process['current_time_process'],
                                 'status' => $dt['status'],
                                 'address' => $dt['address'],
-                                'manager_contractor' => $data_balik_pic,
+                                'kepala_contractor' => $data_balik_pic,
                                 'category_detail' => $data_result
                             );
                         } else {
@@ -303,7 +303,7 @@ if (!empty($obj['id_contractor'])) {
                                 'process_time' => $process['current_time_process'],
                                 'status' => $dt['status_eskalasi'],
                                 'address' => $dt['address'],
-                                'manager_contractor' => $data_balik_pic,
+                                'kepala_contractor' => $data_balik_pic,
                                 'category_detail' => $data_result
                             );
                         }

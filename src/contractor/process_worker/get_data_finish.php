@@ -8,7 +8,7 @@ if (!empty($obj['id_report']) && !empty($obj['id_worker'])) {
     $id_report = mysqli_real_escape_string($db->query, $obj['id_report']);
     $id_worker = mysqli_real_escape_string($db->query, $obj['id_worker']);
 
-    $rs = $db->select('tb_process_work', 'id_worker="' . $id_worker . '"&& id_report="' . $id_report . '"', 'id_process_work', 'DESC');
+    $rs = $db->select('tb_process_work', 'id_report="' . $id_report . '"', 'id_process_work', 'DESC');
 
 
     $data = mysqli_fetch_assoc($rs);
