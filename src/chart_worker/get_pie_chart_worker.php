@@ -43,21 +43,20 @@ if (isset($obj['id_user'])) {
         $laporan_selesai = 0;
         foreach ($id_category as $key => $value) {
 
-            $total = $db->count('tb_report', 'id_category="' . $value . '" AND CONCAT(date_post, " ", time_post) > "' . $hri_kemarin . '" AND CONCAT(date_post, " ", time_post) < "' . $hri_ini . '"', 'id_report');
+            $total = $db->count('tb_report', 'id_category="' . $value . '" AND create_at BETWEEN "' . $hri_kemarin . '"AND"' . $hri_ini . '"', 'id_report');
             $total = mysqli_fetch_assoc($total);
             $total_laporan += $total['count'];
             
 
-            $laporan_blm_dikerjakan = $db->select('tb_report', 'id_category="' . $value . '" AND create_at BEETWEEN "' . $hri_ini . '"AND"' . $hri_kemarin . '"' , 'id_report', 'DESC');
-            var_dump($db->query->error_list);
+            $laporan_blm_dikerjakan = $db->select('tb_report', 'id_category="' . $value . '"AND status IN("Menunggu", "Diterima") AND create_at BETWEEN "' . $hri_kemarin . '"AND"' . $hri_ini . '"' , 'id_report', 'DESC');
             $laporan_blm_dikerjakan = mysqli_num_rows($laporan_blm_dikerjakan);
             $laporan_belum_dikerjakan += $laporan_blm_dikerjakan;
 
-            $laporan_dikerjakan = $db->select('tb_report', 'id_category="' . $value . '" AND status IN("Diproses") AND CONCAT(date_post, " ", time_post) > "' . $hri_kemarin . '" AND CONCAT(date_post, " ", time_post) < "' . $hri_ini . '"', 'id_report', 'DESC');
+            $laporan_dikerjakan = $db->select('tb_report', 'id_category="' . $value . '" AND status = "Diproses" AND create_at BETWEEN "' . $hri_kemarin . '"AND"' . $hri_ini . '"', 'id_report', 'DESC');
             $laporan_dikerjakan = mysqli_num_rows($laporan_dikerjakan);
             $laporan_sedang_dikerjakan += $laporan_dikerjakan;
 
-            $laporan_slesai = $db->select('tb_report', 'id_category="' . $value . '" AND status IN("") AND CONCAT(date_post, " ", time_post) > "' . $hri_kemarin . '" AND CONCAT(date_post, " ", time_post) < "' . $hri_ini . '"', 'id_report', 'DESC');
+            $laporan_slesai = $db->select('tb_report', 'id_category="' . $value . '" AND status = "Selesai" AND create_at BETWEEN "' . $hri_kemarin . '"AND"' . $hri_ini . '"', 'id_report', 'DESC');
             $laporan_slesai = mysqli_num_rows($laporan_slesai);
             $laporan_selesai += $laporan_slesai;
         }
