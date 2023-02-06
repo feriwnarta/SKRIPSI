@@ -48,38 +48,45 @@ if (isset($obj['id_user']) && isset($obj['status']) && isset($obj['start']) && i
         }
         echo json_encode($data_report_return, JSON_PRETTY_PRINT);
     } else {
-        $data_category = $db->select('tb_category', 'id_master_category = "' . $status . '"', 'id_category', 'ASC');
+        $id_master_category = $status;
         $data_report_return = array();
+        $data_category = $db->select('tb_category', 'id_master_category = "' . $id_master_category . '"', 'id_category', 'ASC');
 
-        $cordinator_job = $db->select('tb_estate_cordinator_job', 'id_master_category = "' . $status . '"', 'id_master_category', 'ASC');
-        $data_cordinator_job = array();
+        if (mysqli_num_rows($data_category) > 0) {
 
-
-
-        while ($result_cordinator_job = mysqli_fetch_assoc($cordinator_job)) {
-            $id_estate_cordinator = $result_cordinator_job['id_estate_cordinator'];
-            $data_estate_cordinator = $db->select('tb_estate_cordinator', 'id_estate_cordinator = "' . $id_estate_cordinator . '"', 'id_estate_cordinator', 'ASC');
-            $data_estate_cordinator = mysqli_fetch_assoc($data_estate_cordinator);
-            $data_cordinator_job[] = $data_estate_cordinator;
-        }
+            while ($result_category = mysqli_fetch_assoc($data_category)) {
+                $data_report = $db->selectpage('tb_report', 'id_category = "' . $result_category['id_category'] . '"', 'id_report', 'DESC', $start, $limit);
+                $single_data = array();
 
 
-        $index = 0;
-        while ($result_category = mysqli_fetch_assoc($data_category)) {
-            $id_category = $result_category['id_category'];
-            $data_report = $db->selectpage('tb_report', 'id_category ="' . $id_category . '"', 'id_report', 'DESC', $start, $limit);
+                while ($result_report = mysqli_fetch_assoc($data_report)) {
+                    $single_data = $result_report;
 
 
-            while ($result_report = mysqli_fetch_assoc($data_report)) {
-                $data_report_return[] = $result_report;
-                $time = $result_report['date_post'] . $result_report['time_post'];
-                $time = time_elapsed_string($time);
-                $data_report_return[$index]['waktu'] = $time;
-                $data_report_return[$index]['cordinator'] = $data_cordinator_job;
-                $index++;
+                    if ($result_category['id_category'] == 9) {
+                        $cordinator_job = $db->select('tb_employee_job', 'id_master_category = "' . $id_master_category . '" AND type = "Danru"', 'id_employee_job', 'ASC');
+                    } else {
+                        $cordinator_job = $db->select('tb_employee_job', 'id_master_category = "' . $id_master_category . '" AND type = "Supervisor / Estate Koordinator"', 'id_employee_job', 'ASC');
+                    }
+
+                    if (mysqli_num_rows($cordinator_job) > 0) {
+                        while ($result_cordinator_job = mysqli_fetch_assoc($cordinator_job)) {
+                            $id_estate_cordinator = $result_cordinator_job['id_employee'];
+                            $data_estate_cordinator = $db->select('tb_employee', 'id_employee = "' . $id_estate_cordinator . '"', 'id_employee', 'ASC');
+                            $data_estate_cordinator = mysqli_fetch_assoc($data_estate_cordinator);
+                            $single_data['pic'][] = $data_estate_cordinator;
+                        }
+                        $time = $result_report['date_post'] . $result_report['time_post'];
+                        $time = time_elapsed_string($time);
+                        $single_data['waktu'] = $time;
+                        $data_report_return[] = $single_data;
+                    }
+                }
             }
+            echo json_encode($data_report_return, JSON_PRETTY_PRINT);
+        } else {
+            echo json_encode(array(), JSON_PRETTY_PRINT);
         }
-        echo json_encode($data_report_return, JSON_PRETTY_PRINT);
     }
 }
 
