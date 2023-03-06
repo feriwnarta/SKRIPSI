@@ -90,12 +90,16 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 		$body = 'Anda Menerima laporan baru, segera proses laporan sekarang';
 
 		// kirim notif ke kepala kontraktor
-		$data_contractor = $db->select('tb_contractor_job', 'id_category = "' . $id_category . '"', 'id_category', 'DESC');
+		$master_category = $db->select('tb_category', 'id_category = "' . $id_category . '"', 'id_category', 'ASC');
+		$master_category = mysqli_fetch_assoc($master_category);
+		$id_master_category = $master_category['id_master_category'];
+
+		$data_contractor = $db->select('tb_employee_job', 'id_master_category = "' . $id_master_category . '" AND type = "Mandor / Kepala Kontraktor"', 'id_master_category', 'ASC');
 
 
 		if (mysqli_num_rows($data_contractor) > 0) {
 			while ($result_contractor = mysqli_fetch_assoc($data_contractor)) {
-				$id_contractor = $result_contractor['id_contractor'];
+				$id_contractor = $result_contractor['id_employee'];
 
 				// kirim notif ke table notification
 				$result_add_notif = AddNotification::saveNotif($id_contractor, $id_user, 'INCOMING REPORT', $title, $body);

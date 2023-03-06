@@ -26,8 +26,8 @@ if (!empty($_POST['no_telp']) && !empty($_POST['email'])) {
     //Set this to true if SMTP host requires authentication to send email
     $mail->SMTPAuth = true;
     //Provide username and password     
-    $mail->Username = "noreply@next-g.website";
-    $mail->Password = "51n4r54kt1";
+    $mail->Username = "devlopment@next-g.website";
+    $mail->Password = '51n4r54kt1';
     //If SMTP requires TLS encryption then set it
     $mail->SMTPSecure = "tls";
     //Set TCP port to connect to 
@@ -44,7 +44,7 @@ if (!empty($_POST['no_telp']) && !empty($_POST['email'])) {
     $data_user = $db->select('tb_user', 'email="'.$email.'"', 'id_user', 'DESC');
     $data_user = mysqli_fetch_assoc($data_user);
 
-    $mail->Subject = "HI, " . $data_user['username'];
+    $mail->Subject = "HI, " . $data_user['name'];
     $mail->Body = "We're Happy you register for RW05 BGM PIK apps. To start using this app please insert your OTP code  :  <u>$otp</u> ";
 
 

@@ -77,12 +77,30 @@ if (!empty($obj['usernameOrIpl']) && !empty($obj['password']) && !empty($obj['to
 
 			// dapatkan cluster dan rt
 			$data_population = $db->select('tb_population', 'id_warga="' . $u['id_user'] . '"', 'id_population', 'ASC');
-			$data_population = mysqli_fetch_assoc($data_population);
-			$house_number = $data_population['house_number'];
-			$id_cluster = $data_population['id_cluster'];
 
-			$data_cluster = $db->select('tb_cluster', 'id_cluster = "' . $id_cluster . '"', 'id_cluster', 'ASC');
-			$data_cluster = mysqli_fetch_assoc($data_cluster);
+            $data_cluster = '';
+
+            if(mysqli_num_rows($data_population) > 0) {
+
+                $data_population = mysqli_fetch_assoc($data_population);
+                $house_number = $data_population['house_number'];
+                $id_cluster = $data_population['id_cluster'];
+
+                $data_cluster = $db->select('tb_cluster', 'id_cluster = "' . $id_cluster . '"', 'id_cluster', 'ASC');
+
+                if(mysqli_num_rows($data_cluster) > 0) {
+                    $data_cluster = mysqli_fetch_assoc($data_cluster);
+                    $data_cluster = $data_cluster['cluster'];
+                } else {
+                    $data_cluster = '';
+                }
+
+
+            } else {
+                $house_number = '';
+                $id_cluster = '';
+            }
+
 
 			$data_user = [
 				"status" => $status_auth,
@@ -91,7 +109,7 @@ if (!empty($obj['usernameOrIpl']) && !empty($obj['password']) && !empty($obj['to
 				"active_user" => $active_user,
 				"email" => $u['email'],
 				"no_telp" => $u['no_telp'],
-				"cluster" => $data_cluster['cluster'],
+				"cluster" => $data_cluster,
 				"house_number" => $house_number
 			];
 			echo json_encode($data_user, JSON_PRETTY_PRINT);

@@ -66,7 +66,7 @@ function sendOtpEmail($email, $otp) {
     //Set this to true if SMTP host requires authentication to send email
     $mail->SMTPAuth = true;
     //Provide username and password     
-    $mail->Username = "noreply@next-g.website";
+    $mail->Username = 'devlopment@next-g.website';
     $mail->Password = "51n4r54kt1";
     //If SMTP requires TLS encryption then set it
     $mail->SMTPSecure = "tls";

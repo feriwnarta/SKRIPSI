@@ -21,6 +21,15 @@ if(isset($obj['no_ipl']) && isset($obj['id_user'])) {
     $first_priod = $year . '-01';
     $this_priod = $year . '-' . $month;
     
+    $no_ipl = explode('/', $no_ipl);
+    
+    if(count($no_ipl) > 3) {
+        $no_ipl = $no_ipl[0] . '/' . 'BAST' . '/' . $no_ipl[2] . '/' . $no_ipl[3];
+    } else {
+        $no_ipl = $obj['no_ipl'];
+    }
+
+    
     // query ambil id_population berdasarkan nomor bast
     $id_population = $db->select_rw('tb_population', 'code_population="' . $no_ipl . '"', 'id_population', 'ASC');
     $data_id_population = mysqli_fetch_assoc($id_population);

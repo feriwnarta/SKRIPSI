@@ -30,16 +30,42 @@ if (isset($obj['id_report'])) {
 
 
         // query select process report
-        $data_process_report = $db->select('tb_process_report', 'id_report = "' . $id_report . '"', 'current_time_process', 'DESC');
+        $data_process_report = $db->select('tb_process_report', 'id_report = "' . $id_report . '"', 'current_time_process', 'ASC');
         $data_return_process_report = array();
         if (mysqli_num_rows($data_process_report) > 0) {
+            $index_first = 0;
+            
             while ($result_process_report = mysqli_fetch_assoc($data_process_report)) {
                 $title = $result_process_report['status_process'];
                 $subtitle = $result_process_report['current_time_process'];
-                $data_return_process_report[] = array(
-                    'title' => $title,
-                    'subtitle' => $subtitle
-                );
+                
+                if(mysqli_fetch_assoc($data_process_report)) {
+                    
+                    if($index_first == 0) {
+                        $data_return_process_report[] = array(
+                            'title' => $title,
+                            'subtitle' => $subtitle,
+                            'index' => 'first',
+                        );        
+                    } else {
+                        $data_return_process_report[] = array(
+                            'title' => $title,
+                            'subtitle' => $subtitle,
+                            'index' => 'none',
+                        );        
+                    }    
+                    
+                } else {
+                        $data_return_process_report[] = array(
+                            'title' => $title,
+                            'subtitle' => $subtitle,
+                            'index' => 'last',
+                        );        
+                }
+                
+                $index_first++;
+                
+                
             }
             $data_return['process_report'] = $data_return_process_report;
 

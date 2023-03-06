@@ -16,9 +16,18 @@ if (isset($obj['id_user'])) {
         while ($result = mysqli_fetch_assoc($data)) {
             $id_appropriate = $result['id_appropriate'];
             $data_appropriate = $db->select('tb_user', 'id_user = "' . $id_appropriate . '"', 'id_user', 'ASC');
-            $data_appropriate = mysqli_fetch_assoc($data_appropriate);
 
-            $url_profile = $data_appropriate['profile_image'];
+            // ubah has seen menjadi 1 (true)
+            $db->update('tb_notification', 'hasSeen = "1"' , 'id_notification = "' . $result['id_notification'] . '" AND hasSeen = "0"');
+
+            
+            if(mysqli_num_rows($data_appropriate) > 0) {
+                $data_appropriate = mysqli_fetch_assoc($data_appropriate);
+                $url_profile = $data_appropriate['profile_image'];    
+            } else {
+                $url_profile = 'imageuser/default_profile/blank_profile_picture.jpg';    
+            }
+            
             $title = $result['title'];
             $content = $result['content'];
             $time = time_elapsed_string($result['create_at']);

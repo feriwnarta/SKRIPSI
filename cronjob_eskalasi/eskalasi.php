@@ -4,14 +4,14 @@ class db
 {
 
     var $mysqli_host_app    = "localhost";
-    var $mysqli_database_app = "nextg_mobileapp";
-    var $mysqli_user_app     = "root";
-    var $mysqli_password_app = "";
-
-    var $mysqli_host_rw     = "localhost";
-    var $mysqli_database_rw = "nextg_rw";
-    var $mysqli_user_rw     = "root";
-    var $mysqli_password_rw = "";
+	    var $mysqli_database_app = "u1711122_app";
+	    var $mysqli_user_app     = "u1711122_rw";
+	    var $mysqli_password_app = "080258963Blacker";
+	    
+	    var $mysqli_host_rw     = "localhost";
+	    var $mysqli_database_rw = "u1711122_rw";
+	    var $mysqli_user_rw     = "u1711122_rw";
+	    var $mysqli_password_rw = "080258963Blacker";
 
     var $query = '';
     var $query_rw  = '';
