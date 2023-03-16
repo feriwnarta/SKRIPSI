@@ -32,7 +32,8 @@ if(!empty($_FILES['gambar_berita']) && !empty($_POST['caption']) && !empty($_POS
   		$image_location = '../../imagenews/'.bin2hex($bytes).".$file_extension";
   		move_uploaded_file($tmp_name, $image_location);
   		$ubah=str_replace("../", "", $image_location);
-  		$rs = $db->insert('tb_news', 'url_news_image="'.$ubah.'",caption="'.$caption.'",content="'.$content.'",writer="'.$usernameWriter.'"');
+  		$rs = $db->insert('tb_informasi_umum', 'url_news_image="'.$ubah.'",caption="'.$caption.'",content="'.$content.'",writer="'.$usernameWriter.'"');
+
   		if($rs) {
   			echo json_encode('OK');
   		} else {

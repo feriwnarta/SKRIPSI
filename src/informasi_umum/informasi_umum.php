@@ -5,7 +5,7 @@ $json = file_get_contents('php://input');
 $obj = json_decode($json, true);
 
 if(!empty($obj['id_user'])) {
-	$data = $db->select('tb_news', 'id_news', 'id_news', 'DESC');
+	$data = $db->select('tb_informasi_umum', 'id_informasi_umum', 'id_informasi_umum', 'DESC');
 	$data_balik = array();
 	$bulan = array (
 		'Januari',

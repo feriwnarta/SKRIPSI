@@ -106,16 +106,19 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 
 				$data = CheckNotification::activeNotif($id_contractor);
 
-				if ($data['report_received'] == '1') {
-					// select token fcm
-					$data_fcm = $db->select('tb_user_fcm_token', 'id_user = "' . $id_contractor . '"', 'id_fcm', 'ASC');
-					$data_fcm = mysqli_fetch_assoc($data_fcm);
+                if($data != null) {
+                    if ($data['report_received'] == '1') {
+                        // select token fcm
+                        $data_fcm = $db->select('tb_user_fcm_token', 'id_user = "' . $id_contractor . '"', 'id_fcm', 'ASC');
+                        $data_fcm = mysqli_fetch_assoc($data_fcm);
 
-					$token = $data_fcm['token'];
+                        $token = $data_fcm['token'];
 
-					// kirim notif ke yang bersangkutan
-					FirebaseMessaging::sendNotif($token, $title, $body);
-				}
+                        // kirim notif ke yang bersangkutan
+                        FirebaseMessaging::sendNotif($token, $title, $body);
+                    }
+                }
+
 			}
 		}
 
