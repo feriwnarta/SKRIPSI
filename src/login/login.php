@@ -7,7 +7,7 @@ date_default_timezone_set('asia/jakarta');
 $json = file_get_contents('php://input');
 $obj = json_decode($json, true);
 
-if (!empty($obj['usernameOrIpl']) && !empty($obj['password']) && !empty($obj['token'])) {
+if (!empty($obj['usernameOrIpl']) && !empty($obj['password']) && !empty($obj['token']) && !empty($obj['device_name']) && !empty($obj['device_identifier'])) {
 	$usernameOrIpl = $obj['usernameOrIpl'];
 	$ubah1 = str_replace("=", "", base64_encode($obj['password']));
 	$token = mysqli_real_escape_string($db->query, $obj['token']);
@@ -79,11 +79,21 @@ if (!empty($obj['usernameOrIpl']) && !empty($obj['password']) && !empty($obj['to
 			$data_population = $db->select('tb_population', 'id_warga="' . $u['id_user'] . '"', 'id_population', 'ASC');
 
 			$data_population = mysqli_fetch_assoc($data_population);
-			$house_number = $data_population['house_number'];
-			$id_cluster = $data_population['id_cluster'];
 
-			$data_cluster = $db->select('tb_cluster', 'id_cluster = "' . $id_cluster . '"', 'id_cluster', 'ASC');
-			$data_cluster = mysqli_fetch_assoc($data_cluster);
+			if ($data_population != null) {
+				$house_number = $data_population['house_number'];
+				$id_cluster = $data_population['id_cluster'];
+
+				$data_cluster = $db->select('tb_cluster', 'id_cluster = "' . $id_cluster . '"', 'id_cluster', 'ASC');
+				$data_cluster = mysqli_fetch_assoc($data_cluster);
+				$cluster = $data_cluster['cluster'];
+			} else {
+				$cluster = '';
+				$house_number = '';
+			}
+
+
+
 
 			$data_user = [
 				"status" => $status_auth,
@@ -92,12 +102,10 @@ if (!empty($obj['usernameOrIpl']) && !empty($obj['password']) && !empty($obj['to
 				"active_user" => $active_user,
 				"email" => $u['email'],
 				"no_telp" => $u['no_telp'],
-				"cluster" => $data_cluster['cluster'],
+				"cluster" => $cluster,
 				"house_number" => $house_number
 			];
 			echo json_encode($data_user, JSON_PRETTY_PRINT);
-
-
 		} else {
 			echo json_encode('auth not exist');
 		}

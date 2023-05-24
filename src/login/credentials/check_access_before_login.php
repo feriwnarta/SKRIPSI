@@ -8,7 +8,7 @@ $obj = json_decode($json, true);
 if (!empty($obj['username'])) {
     $username =  mysqli_real_escape_string($db->query, ($obj['username']));
 
-    $data = $db->select('tb_user', 'username = "' . $username . '"', 'id_user', 'ASC');
+    $data = $db->select('tb_user', 'username = "' . $username . '" OR email= "' . $username . '"', 'id_user', 'ASC');
     if (mysqli_num_rows($data) > 0) {
         $data = mysqli_fetch_assoc($data);
         $data_auth = $db->select('tb_access', 'id_auth = "' . $data['id_auth'] . '"', 'id_access', 'ASC');
