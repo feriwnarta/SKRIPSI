@@ -11,7 +11,6 @@ if (!empty($obj['id_user']) && isset($obj['status_user'])) {
 	$cek = $db->select('tb_user', 'id_user="' . $id_user . '"', 'id_user', 'ASC');
 	$jum = mysqli_num_rows($cek);
 
-	
 	if ($jum > 0) {
 		$data_user = [];
 		$data = mysqli_fetch_assoc($cek);
@@ -31,6 +30,9 @@ if (!empty($obj['id_user']) && isset($obj['status_user'])) {
 			$id_rt = '';
 		}
 
+
+
+
 		$data_cluster = $db->select('tb_cluster', 'id_cluster = "' . $id_cluster . '"', 'id_cluster', 'ASC');
 		if (mysqli_num_rows($data_cluster) > 0) {
 			$data_cluster = mysqli_fetch_assoc($data_cluster);
@@ -38,6 +40,11 @@ if (!empty($obj['id_user']) && isset($obj['status_user'])) {
 		} else {
 			$cluster = '';
 		}
+
+		// 		$data_rt = $db->select('tb_rt', 'id_rt = "' . $id_rt . '"', 'id_rt', 'ASC');
+
+
+		// 		$rt = $data_rt[''];
 
 
 		foreach ($data as $key => $value) {

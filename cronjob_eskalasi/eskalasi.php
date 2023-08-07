@@ -163,7 +163,7 @@ if (mysqli_num_rows($data_report) > 0) {
         if ($status == 'Menunggu') {
             
 
-            if ($waktu == '1 menit') {
+            if ($waktu == '1 jam') {
 
                 $check_exist_eskalasi = $db->select('tb_report', 'id_report = "' . $id_report . '" AND status_eskalasi = ""', 'id_report', 'DESC');
 
@@ -212,7 +212,7 @@ if (mysqli_num_rows($data_report) > 0) {
                         }
                     }
                 }
-            } else if ($waktu == '2 menit') {
+            } else if ($waktu == '2 jam') {
 
                 if ($status_eskalasi == 'Eskalasi tingkat 1') {
                     $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 2"', 'id_report = "' . $id_report . '"');
@@ -258,7 +258,7 @@ if (mysqli_num_rows($data_report) > 0) {
                         }
                     }
                 }
-            } else if ($waktu == '3 menit') {
+            } else if ($waktu == '3 jam') {
                 if ($status_eskalasi == 'Eskalasi tingkat 2') {
                     $query = $db->update('tb_report', 'status_eskalasi = "Eskalasi tingkat 3"', 'id_report = "' . $id_report . '"');
                     if ($query) {
