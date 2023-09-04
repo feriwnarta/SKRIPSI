@@ -17,7 +17,7 @@ if (!empty($_POST['no_ipl']) && !empty($_POST['email']) && !empty($_POST['no_tel
 	$no_telp =  mysqli_real_escape_string($db->query, ($_POST['no_telp']));
 	$no_ipl_check = strtoupper($no_ipl_check);
 	$email = mysqli_real_escape_string($db->query, ($_POST['email']));
-	$checkExistIpl = mysqli_num_rows($db->select('tb_user', 'username="' . $no_ipl . '"', 'id_user', 'ASC'));
+	$checkExistIpl = mysqli_num_rows($db->select('tb_user', 'username="' . $no_ipl . '" AND status NOT IN ("DEACTIVE")', 'id_user', 'ASC'));
 	$checkExistEmail = mysqli_num_rows($db->select('tb_user', 'email="' . $email . '"', 'id_user', 'ASC'));
 	$checkExistPhoneNumber = mysqli_num_rows($db->select('tb_user', 'no_telp="' . $_POST['no_telp'] . '"', 'id_user', 'ASC'));
 
