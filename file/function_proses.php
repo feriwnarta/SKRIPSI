@@ -1,15 +1,15 @@
 <?php
 	class db{
 
-		var $mysqli_host_app    = "193.203.185.1";
-	    var $mysqli_database_app = "u238830624_bgm";
-	    var $mysqli_user_app     = "u238830624_bgm";
-	    var $mysqli_password_app = "e+WLHbp;etH3";
+        var $mysqli_host_app = "178.128.24.13";
+        var $mysqli_database_app = "skripsi";
+	    var $mysqli_user_app     = "apps";
+	    var $mysqli_password_app = "F3121w1n412t4@";
 
-	    var $mysqli_host_rw     = "193.203.185.1";
-	    var $mysqli_database_rw = "u238830624_rw";
-	    var $mysqli_user_rw     = "u238830624_rw";
-	    var $mysqli_password_rw = "e+WLHbp;etH3";
+	    var $mysqli_host_rw     = "178.128.24.13";
+	    var $mysqli_database_rw = "skripsi_rw";
+	    var $mysqli_user_rw     = "apps";
+	    var $mysqli_password_rw = "F3121w1n412t4@";
 
 		var $query = '';
 		var $query_rw  = '';
