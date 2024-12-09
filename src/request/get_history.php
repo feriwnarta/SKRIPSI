@@ -29,6 +29,10 @@ if (isset($obj['id_user']) && isset($obj['start']) && isset($obj['limit']) && is
 
 function getDataKantongSampah($db, $idUser, $start, $limit, $type)
 {
+    if ($type == 'Terkirim') {
+        $type = 'Dikirim';
+    }
+
     try {
         $query = 'SELECT id, id_user, image, note, periode, status, create_at 
                   FROM tb_upload_ipl 

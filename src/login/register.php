@@ -17,7 +17,7 @@ if (!empty($_POST['no_ipl']) && !empty($_POST['email']) && !empty($_POST['no_tel
 	$no_telp =  mysqli_real_escape_string($db->query, ($_POST['no_telp']));
 	$no_ipl_check = strtoupper($no_ipl_check);
 	$email = mysqli_real_escape_string($db->query, ($_POST['email']));
-	$checkExistIpl = mysqli_num_rows($db->select('tb_user', 'username="' . $no_ipl . '" AND status NOT IN ("DEACTIVE")', 'id_user', 'ASC'));
+	$checkExistIpl = mysqli_num_rows($db->select('tb_user', 'username="' . $no_ipl . '"', 'id_user', 'ASC'));
 	$checkExistEmail = mysqli_num_rows($db->select('tb_user', 'email="' . $email . '"', 'id_user', 'ASC'));
 	$checkExistPhoneNumber = mysqli_num_rows($db->select('tb_user', 'no_telp="' . $_POST['no_telp'] . '"', 'id_user', 'ASC'));
 
@@ -35,6 +35,11 @@ if (!empty($_POST['no_ipl']) && !empty($_POST['email']) && !empty($_POST['no_tel
 		$data_balik = array();
 		if (!empty($no_ipl)) {
 			$pecah = explode('/', $no_ipl);
+
+            if(empty($pecah)) {
+                echo json_encode('format ipl tidak sesuai');
+            }
+
 			if ($pecah['1'] == 'RW') {
 				$data_lengkap = $pecah[0] . '/' . 'BAST' . '/' . $pecah[2] . '/' . $pecah[3];
 				$result = $db->select_rw('tb_population', 'code_population="' . $data_lengkap . '"', 'id_population', 'ASC');

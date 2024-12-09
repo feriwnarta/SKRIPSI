@@ -27,7 +27,7 @@ if (!empty($_POST['no_telp']) && !empty($_POST['email'])) {
     $mail->SMTPAuth = true;
     //Provide username and password     
     $mail->Username = "devlopment@next-g.website";
-    $mail->Password = '51n4r54kt1';
+    $mail->Password = '51n4r54kt151n4r54kt1';
     //If SMTP requires TLS encryption then set it
     $mail->SMTPSecure = "tls";
     //Set TCP port to connect to 

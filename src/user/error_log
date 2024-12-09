@@ -48,3 +48,7 @@
 [12-Jul-2022 06:46:04 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, null given in /home/u1711122/public_html/app/src/user/user.php on line 10
 [12-Jul-2022 06:47:04 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/user/user.php on line 10
 [19-Sep-2022 02:07:58 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, bool given in /home/u1711122/public_html/app/src/user/update_user.php on line 27
+[04-Mar-2024 09:42:26 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 19
+[04-Mar-2024 09:42:26 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 19
+[04-Mar-2024 09:42:26 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 19
+[04-Mar-2024 09:42:26 UTC] PHP Warning:  mysqli_connect(): (HY000/1203): User u1711122_rw already has more than 'max_user_connections' active connections in /home/u1711122/public_html/app/file/function_proses.php on line 19
