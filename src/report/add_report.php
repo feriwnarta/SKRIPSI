@@ -17,6 +17,7 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 	// file extension
 	$file_extension = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 	$file_extension = strtolower($file_extension);
+
 	// Check extension
 	if (in_array($file_extension, $valid_ext)) {
 		$bytes = random_bytes(20);
@@ -106,14 +107,14 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 
 				$data = CheckNotification::activeNotif($id_contractor);
 
-				if ($data['report_received'] == '1') {
-					// select token fcm
+				if (isset($data['report_received']) && $data['report_received'] == '1') {
+                    // select token fcm
 					$data_fcm = $db->select('tb_user_fcm_token', 'id_user = "' . $id_contractor . '"', 'id_fcm', 'ASC');
 					$data_fcm = mysqli_fetch_assoc($data_fcm);
 
 					$token = $data_fcm['token'];
 
-					// kirim notif ke yang bersangkutan
+                    // kirim notif ke yang bersangkutan
 					FirebaseMessaging::sendNotif($token, $title, $body);
 				}
 			}
@@ -132,7 +133,7 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 
 				$data = CheckNotification::activeNotif($id_manager);
 
-				if ($data['report_received'] == '1') {
+                if (isset($data['report_received']) && $data['report_received'] == '1') {
 					// select token fcm
 					$data_fcm = $db->select('tb_user_fcm_token', 'id_user = "' . $id_manager . '"', 'id_fcm', 'ASC');
 					$data_fcm = mysqli_fetch_assoc($data_fcm);
@@ -160,7 +161,7 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 
 				$data = CheckNotification::activeNotif($id_estate_cordinator);
 
-				if ($data['report_received'] == '1') {
+                if (isset($data['report_received']) && $data['report_received'] == '1') {
 
 					// select token berdasarkan id cordinator yang diambil
 					$toket = $db->select('tb_user_fcm_token', 'id_user="' . $id_estate_cordinator . '"', 'id_fcm', 'ASC');
@@ -185,7 +186,7 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 
 				$data = CheckNotification::activeNotif($id_em);
 
-				if ($data['report_received'] == '1') {
+                if (isset($data['report_received']) && $data['report_received'] == '1') {
 
 					// select token fcm
 					$data_fcm = $db->select('tb_user_fcm_token', 'id_user = "' . $id_em . '"', 'id_fcm', 'ASC');
@@ -194,7 +195,7 @@ if (!empty($_FILES['image']['name']) && !empty($_POST['id_user']) && !empty($_PO
 					$token = $data_fcm['token'];
 
 					// kirim notif ke yang bersangkutan
-					FirebaseMessaging::sendNotif($token, $title, $body);
+					 FirebaseMessaging::sendNotif($token, $title, $body);
 				}
 			}
 		}
