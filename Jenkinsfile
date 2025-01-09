@@ -14,15 +14,6 @@ pipeline {
         git 'https://github.com/feriwnarta/SKRIPSI.git'
       }
     }
-
-    stage('Build image') {
-      steps{
-        script {
-          dockerImage = docker.build dockerimagename
-        }
-      }
-    }
-
   }
 
 }
